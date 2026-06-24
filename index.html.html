@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FORGE">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#ffffff">
+<title>FORGE — Performance System</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --ink:#0a0a0a;
+  --ink-2:#3a3a3a;
+  --muted:#9a9a9a;
+  --line:#ececec;
+  --line-2:#f4f4f4;
+  --accent:#ff3b1d;
+  --accent-soft:#fff0ed;
+  --card:#ffffff;
+  --raise:#fafafa;
+  --good:#16a34a;
+  --warn:#d97706;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.05);
+  --shadow-lg:0 4px 12px rgba(0,0,0,.06),0 24px 48px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+body{padding-bottom:96px}
+.mono{font-family:"SF Mono",ui-monospace,"Roboto Mono",Menlo,monospace}
+.cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+
+/* Header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.head-in{max-width:760px;margin:0 auto;padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:9px}
+.brand h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);transform:translateY(-3px)}
+.brand .sub{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.head-meta{text-align:right}
+.head-meta .who{font-size:13px;font-weight:700}
+.head-meta .stat{font-size:11px;color:var(--muted);font-weight:600}
+
+/* Phase strip */
+.phase{max-width:760px;margin:0 auto;padding:10px 18px;display:flex;gap:7px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.phase::-webkit-scrollbar{display:none}
+.wk{flex:0 0 auto;min-width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);background:var(--bg);cursor:pointer;transition:.15s}
+.wk.acc{border-color:#e8e8e8}
+.wk.on{background:var(--ink);color:#fff;border-color:var(--ink);transform:scale(1.06)}
+.wk.deload{border-color:var(--accent);color:var(--accent)}
+.phase-label{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--ink-2);padding-right:4px}
+
+main{max-width:760px;margin:0 auto;padding:6px 14px 40px}
+
+/* Tabs / variant switch */
+.seg{display:flex;background:var(--line-2);border-radius:12px;padding:4px;margin:14px 0 18px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;padding:9px 6px;border-radius:9px;font-size:13px;font-weight:700;color:var(--ink-2);cursor:pointer;transition:.18s;letter-spacing:-.01em}
+.seg button .n{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+.seg button.on .n{color:var(--accent)}
+
+/* Day card */
+.day{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
+.day-head{padding:15px 17px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.day-head .l{display:flex;align-items:center;gap:13px;min-width:0}
+.daynum{flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.day.rest .daynum{background:var(--line);color:var(--muted)}
+.dt{min-width:0}
+.dt h3{font-size:15.5px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dt .focus{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:1px}
+.day-head .r{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.pill{font-size:10px;font-weight:700;color:var(--ink-2);background:var(--line-2);padding:4px 8px;border-radius:20px;letter-spacing:.02em}
+.chev{width:20px;height:20px;color:var(--muted);transition:.2s}
+.day.open .chev{transform:rotate(180deg)}
+.day-body{display:none;border-top:1px solid var(--line-2)}
+.day.open .day-body{display:block}
+
+/* Exercise table */
+.exhead{display:grid;grid-template-columns:1fr 56px 44px 60px 50px 34px;gap:6px;padding:9px 14px 7px;align-items:end}
+.exhead span{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.exhead span:not(:first-child){text-align:center}
+.ex{display:grid;grid-template-columns:1fr 56px 44px 60px 50px 34px;gap:6px;padding:11px 14px;align-items:center;border-top:1px solid var(--line-2)}
+.ex .name{font-size:13.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.ex .name .note{display:block;font-size:10.5px;color:var(--muted);font-weight:500;margin-top:2px}
+.ex .cell{text-align:center}
+.ex .cell .v{font-size:13px;font-weight:700}
+.ex .cell.sets .v{color:var(--ink)}
+.ex .cell.rpe .v{font-size:12px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 5px;display:inline-block}
+.ex .cell.rpe .v.dash{color:var(--muted);background:transparent;font-weight:600}
+.ex .cell.tempo .v{font-size:12px;color:var(--ink-2);font-family:"SF Mono",ui-monospace,monospace}
+.ex .cell.rest .v{font-size:12px;color:var(--ink-2)}
+.ex .del{display:flex;align-items:center;justify-content:center}
+.ex .del button{width:26px;height:26px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ex .del button:active{background:var(--accent-soft);color:var(--accent)}
+.ex.editing{background:var(--raise)}
+.ex input{width:100%;border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 7px;font-size:12.5px;font-family:inherit;color:var(--ink);text-align:center}
+.ex input.name-in{text-align:left;font-weight:600}
+.add-row{padding:11px 14px;border-top:1px solid var(--line-2)}
+.add-row button{width:100%;border:1px dashed var(--line);background:var(--bg);border-radius:10px;padding:10px;font-size:12.5px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-row button:active{border-color:var(--accent);color:var(--accent)}
+
+.block-note{margin:10px 14px 14px;padding:11px 13px;background:var(--accent-soft);border-radius:12px;font-size:12px;line-height:1.5;color:#7a2318}
+.block-note b{color:var(--accent)}
+
+/* Conditioning circuit */
+.circuit{padding:6px 14px 14px}
+.circuit .ci{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.circuit .ci:last-child{border-bottom:0}
+.circuit .ci-l{display:flex;flex-direction:column;gap:2px;min-width:0}
+.circuit .ci .nm{font-size:13.5px;font-weight:600}
+.circuit .ci-int{font-size:11px;color:var(--muted);font-weight:500;line-height:1.3}
+.circuit .ci .tg{font-size:12px;font-weight:700;color:var(--accent);font-family:"SF Mono",monospace;flex:0 0 auto;padding-left:12px}
+
+/* Rest day */
+.rest-body{padding:18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
+
+/* Nutrition */
+.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow)}
+.mcard h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:11px}
+.mrow{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line-2)}
+.mrow:last-child{border-bottom:0}
+.mrow .k{font-size:13px;font-weight:600;color:var(--ink-2)}
+.mrow .val{display:flex;align-items:baseline;gap:1px}
+.mrow .val input{width:64px;border:1px solid transparent;background:transparent;border-radius:7px;padding:4px 5px;font-size:14px;font-weight:800;font-family:inherit;color:var(--ink);text-align:right}
+.mrow .val input:focus{border-color:var(--line);background:#fff;outline:none}
+.mrow .u{font-size:11px;color:var(--muted);font-weight:600;width:30px}
+.prot{color:var(--accent)!important}
+
+.meals .meal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow)}
+.meal .mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.meal .mh .mt{font-size:13px;font-weight:800;letter-spacing:-.01em}
+.meal .mh .when{font-size:10.5px;color:var(--accent);font-weight:700}
+.meal .mc{font-size:12.5px;color:var(--ink-2);line-height:1.45;border:1px solid transparent;border-radius:8px;padding:3px 5px;margin:-3px -5px}
+.meal .mc:focus{border-color:var(--line);background:#fff;outline:none}
+
+.rule{background:var(--ink);color:#fff;border-radius:16px;padding:16px 17px;margin-bottom:16px}
+.rule .cap{color:rgba(255,255,255,.5)}
+.rule p{font-size:14px;line-height:1.5;margin-top:7px;font-weight:600}
+.rule p b{color:var(--accent)}
+
+/* Supplements */
+.supp{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:var(--card);border:1px solid var(--line);border-radius:13px;margin-bottom:8px;box-shadow:var(--shadow)}
+.supp .sl{min-width:0}
+.supp .sn{font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.supp .sw{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px}
+.supp .sd{font-size:13px;font-weight:800;color:var(--accent);font-family:"SF Mono",monospace;flex:0 0 auto;padding-left:12px}
+
+/* Recovery / generic info card */
+.info{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 17px;margin-bottom:12px;box-shadow:var(--shadow)}
+.info h4{font-size:13px;font-weight:800;letter-spacing:-.01em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.info h4 .ic{width:22px;height:22px;border-radius:7px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.info ul{list-style:none}
+.info li{font-size:12.5px;line-height:1.5;color:var(--ink-2);padding:6px 0 6px 18px;position:relative;border-bottom:1px solid var(--line-2)}
+.info li:last-child{border-bottom:0}
+.info li:before{content:"";position:absolute;left:2px;top:13px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+
+/* Tracking */
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:11px;box-shadow:var(--shadow)}
+.kpi .kt{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.kpi .kn{width:26px;height:26px;border-radius:8px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:0 0 auto}
+.kpi h4{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.kpi p{font-size:12.5px;line-height:1.5;color:var(--ink-2);padding-left:36px}
+.log{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+.log h4{font-size:13px;font-weight:800;margin-bottom:12px}
+.log-in{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.log-in label{display:block}
+.log-in .cap{margin-bottom:5px;display:block}
+.log-in input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;font-size:14px;font-weight:700;font-family:inherit;text-align:center}
+.log button.save{width:100%;border:0;background:var(--ink);color:#fff;border-radius:11px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}
+.log-list{margin-top:14px}
+.log-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.log-item .ld{color:var(--muted);font-weight:600}
+.log-item .lv{font-weight:700}
+.log-item .lv span{color:var(--muted);font-weight:500;margin:0 2px}
+
+/* Section title */
+.sec-t{display:flex;align-items:center;justify-content:space-between;margin:22px 4px 12px}
+.sec-t h2{font-size:18px;font-weight:800;letter-spacing:-.025em}
+.sec-t .hint{font-size:11px;color:var(--muted);font-weight:600}
+
+/* Bottom nav */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,255,.96);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1.5px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.06);padding-bottom:env(safe-area-inset-bottom)}
+.nav-in{max-width:760px;margin:0 auto;display:flex;padding:8px 8px 6px}
+.nav-in button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;cursor:pointer;color:var(--muted);border-radius:12px;transition:.15s}
+.nav-in button svg{width:23px;height:23px}
+.nav-in button .lb{font-size:10.5px;font-weight:700;letter-spacing:.01em}
+.nav-in button.on{color:var(--ink);background:var(--line-2)}
+.nav-in button.on .lb{color:var(--accent)}
+
+/* Edit toggle FAB-ish in header */
+.edit-btn{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s}
+.edit-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.edit-btn svg{width:14px;height:14px}
+
+.view{display:none}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.foot{text-align:center;font-size:11px;color:var(--muted);padding:24px 0 8px;line-height:1.6}
+.foot b{color:var(--ink-2)}
+
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.reset-link{display:block;width:100%;text-align:center;background:none;border:0;color:var(--muted);font-size:12px;font-weight:600;padding:14px;cursor:pointer;text-decoration:underline}
+
+/* Top nav (shown on tablet/desktop) */
+.topnav{display:none}
+.topnav button{border:0;background:transparent;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:8px 14px;border-radius:10px;transition:.15s;display:flex;align-items:center;gap:7px}
+.topnav button svg{width:17px;height:17px}
+.topnav button:hover{color:var(--ink-2);background:var(--line-2)}
+.topnav button.on{color:var(--ink);background:var(--line-2)}
+.topnav button.on .lb{color:var(--accent)}
+
+/* ====== TABLET & DESKTOP ====== */
+@media (min-width:760px){
+  body{padding-bottom:40px}
+  .head-in{max-width:1080px;padding:16px 28px 14px}
+  .phase{max-width:1080px;padding:11px 28px}
+  main{max-width:1080px;padding:8px 28px 60px}
+  /* hide bottom bar, show top nav */
+  nav{display:none}
+  .topnav{display:flex;gap:4px;align-items:center;margin-left:18px;flex:1}
+  .head-mid{display:flex;align-items:center;flex:1}
+  /* two-column where it helps */
+  .macro-grid{grid-template-columns:1fr 1fr;gap:14px}
+  #v-nutrition .meals{columns:2;column-gap:14px}
+  #v-nutrition .meals .meal{break-inside:avoid}
+  #suppWrap{columns:2;column-gap:14px}
+  #suppWrap .supp{break-inside:avoid}
+  #recoveryWrap{columns:2;column-gap:14px}
+  #recoveryWrap .info{break-inside:avoid;margin-bottom:14px}
+  #weakWrap{columns:2;column-gap:14px}
+  #weakWrap .supp{break-inside:avoid}
+  #kpiWrap{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  #kpiWrap .kpi{margin-bottom:0}
+  .timer{bottom:28px}
+  /* exercise rows breathe more */
+  .exhead,.ex{grid-template-columns:1fr 80px 54px 80px 70px 40px;padding-left:18px;padding-right:18px}
+  .ex .name{font-size:14.5px}
+  .day-head{padding:17px 20px}
+}
+@media (min-width:1024px){
+  #daysWrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #daysWrap .day{margin-bottom:0}
+  .sec-t{grid-column:1/-1}
+}
+/* Larger touch targets stay good on all sizes */
+@media (hover:none){
+  .nav-in button{padding:9px 2px}
+}
+
+/* Rest value tappable */
+.ex .cell.rest .v{cursor:pointer;border-bottom:1px dashed var(--line);padding-bottom:1px}
+.ex .cell.rest .v:active{color:var(--accent)}
+
+/* Rest timer floating widget */
+.timer{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(140%);z-index:90;width:min(340px,calc(100vw - 28px));background:var(--ink);color:#fff;border-radius:22px;padding:18px 18px 16px;box-shadow:var(--shadow-lg);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.timer.up{transform:translateX(-50%) translateY(0)}
+.timer .tt{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.timer .tt .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.55)}
+.timer .tt .x{width:28px;height:28px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.timer .disp{font-size:52px;font-weight:800;letter-spacing:-.03em;text-align:center;font-variant-numeric:tabular-nums;line-height:1;margin-bottom:4px}
+.timer .disp.done{color:var(--accent)}
+.timer .bar{height:4px;background:rgba(255,255,255,.14);border-radius:4px;overflow:hidden;margin:12px 0 14px}
+.timer .bar i{display:block;height:100%;background:var(--accent);width:100%;transition:width 1s linear}
+.timer .ctrls{display:flex;gap:8px}
+.timer .ctrls button{flex:1;border:0;border-radius:12px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.timer .ctrls .adj{background:rgba(255,255,255,.12);color:#fff;flex:0 0 56px}
+.timer .ctrls .pri{background:var(--accent);color:#fff}
+.timer .ctrls .sec{background:rgba(255,255,255,.12);color:#fff}
+.timer .quick{display:flex;gap:6px;margin-top:10px}
+.timer .quick button{flex:1;border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(255,255,255,.8);border-radius:10px;padding:8px 4px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.timer .quick button:active{background:rgba(255,255,255,.12)}
+
+/* Timer launcher button in header area */
+.timer-fab{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;margin-left:8px}
+.timer-fab svg{width:14px;height:14px}
+.timer-fab:active{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-in">
+    <div class="brand">
+      <h1>FORGE</h1><span class="dot"></span>
+      <span class="sub">PERFORMANCE SYSTEM</span>
+    </div>
+    <div class="topnav" id="topnav">
+      <button data-view="train" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5h11M6.5 17.5h11M4 9v6M20 9v6M9 4.5v15M15 4.5v15"/></svg><span class="lb">Train</span></button>
+      <button data-view="nutrition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c-3 0-5 2.5-5 6 0 4 2.5 12 5 12s5-8 5-12c0-3.5-2-6-5-6Z"/></svg><span class="lb">Nutrition</span></button>
+      <button data-view="recovery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 5.6a5 5 0 0 0-7 0L12 7.3l-1.8-1.7a5 5 0 1 0-7 7l8.8 8.7 8.8-8.7a5 5 0 0 0 0-7Z"/></svg><span class="lb">Recovery</span></button>
+      <button data-view="track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 16l3-4 3 2 4-6"/></svg><span class="lb">Track</span></button>
+    </div>
+    <div class="head-meta">
+      <div class="who">Cyrus · 61kg</div>
+      <div class="stat">Strength · Power · Lean</div>
+    </div>
+  </div>
+  <div class="phase" id="phaseStrip"></div>
+</header>
+
+<main>
+  <!-- TRAIN -->
+  <section class="view on" id="v-train">
+    <div class="seg" id="variantSeg">
+      <button data-v="6" class="on">6-Day <span class="n">FULL SYSTEM</span></button>
+      <button data-v="5">5-Day <span class="n">COMPRESSED</span></button>
+      <button data-v="4">4-Day <span class="n">MINIMAL</span></button>
+    </div>
+    <div class="sec-t">
+      <h2 id="variantTitle">6-Day Split</h2>
+      <div style="display:flex;align-items:center">
+        <button class="timer-fab" id="timerFab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M12 1h0M9 1h6"/></svg>
+          Timer
+        </button>
+        <button class="edit-btn" id="editToggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Edit
+        </button>
+      </div>
+    </div>
+    <div id="daysWrap"></div>
+  </section>
+
+  <!-- NUTRITION -->
+  <section class="view" id="v-nutrition">
+    <div class="sec-t"><h2>Nutrition</h2><span class="hint">tap any value to edit</span></div>
+    <div class="macro-grid" id="macroGrid"></div>
+    <div class="rule">
+      <div class="cap">The One Rule</div>
+      <p id="oneRule"></p>
+    </div>
+    <div class="sec-t"><h2>Daily Meals</h2><span class="hint">tap text to edit</span></div>
+    <div class="meals" id="mealsWrap"></div>
+    <div class="sec-t"><h2>Supplements</h2></div>
+    <div id="suppWrap"></div>
+  </section>
+
+  <!-- RECOVERY -->
+  <section class="view" id="v-recovery">
+    <div class="sec-t"><h2>Recovery</h2></div>
+    <div id="recoveryWrap"></div>
+    <div class="sec-t"><h2>Weak Point Priorities</h2></div>
+    <div id="weakWrap"></div>
+  </section>
+
+  <!-- TRACK -->
+  <section class="view" id="v-track">
+    <div class="sec-t"><h2>Weekly Log</h2></div>
+    <div class="log">
+      <h4>Log this week</h4>
+      <div class="log-in">
+        <label><span class="cap">Lower lift</span><input id="logLower" placeholder="100×5"></label>
+        <label><span class="cap">Upper lift</span><input id="logUpper" placeholder="65×6"></label>
+        <label><span class="cap">Bodyweight</span><input id="logBw" placeholder="61.2"></label>
+      </div>
+      <div class="log-in">
+        <label><span class="cap">Power /10</span><input id="logPower" placeholder="8"></label>
+        <label><span class="cap">Sleep /10</span><input id="logSleep" placeholder="7"></label>
+        <label><span class="cap">Energy /10</span><input id="logEnergy" placeholder="8"></label>
+      </div>
+      <button class="save" id="logSave">Save week</button>
+      <div class="log-list" id="logList"></div>
+    </div>
+    <div class="sec-t"><h2>The 3 KPIs</h2></div>
+    <div id="kpiWrap"></div>
+    <button class="reset-link" id="resetBtn">Reset all data to original plan</button>
+  </section>
+
+  <div class="foot">
+    <b>FORGE</b> — built for Cyrus · 12-week mesocycle<br>
+    Works offline · Add to Home Screen · All edits save on your device
+  </div>
+</main>
+
+<nav>
+  <div class="nav-in" id="nav">
+    <button data-view="train" class="on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5h11M6.5 17.5h11M4 9v6M20 9v6M9 4.5v15M15 4.5v15"/></svg>
+      <span class="lb">Train</span>
+    </button>
+    <button data-view="nutrition">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c-3 0-5 2.5-5 6 0 4 2.5 12 5 12s5-8 5-12c0-3.5-2-6-5-6Z"/><path d="M12 3v6"/></svg>
+      <span class="lb">Nutrition</span>
+    </button>
+    <button data-view="recovery">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 5.6a5 5 0 0 0-7 0L12 7.3l-1.8-1.7a5 5 0 1 0-7 7l8.8 8.7 8.8-8.7a5 5 0 0 0 0-7Z"/></svg>
+      <span class="lb">Recovery</span>
+    </button>
+    <button data-view="track">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 16l3-4 3 2 4-6"/></svg>
+      <span class="lb">Track</span>
+    </button>
+  </div>
+</nav>
+
+<div class="timer" id="timer">
+  <div class="tt"><span class="lbl" id="timerLbl">Rest Timer</span><button class="x" id="timerClose">✕</button></div>
+  <div class="disp" id="timerDisp">2:00</div>
+  <div class="bar"><i id="timerBar"></i></div>
+  <div class="ctrls">
+    <button class="adj" id="timerMinus">−15</button>
+    <button class="pri" id="timerToggle">Start</button>
+    <button class="adj" id="timerPlus">+15</button>
+  </div>
+  <div class="quick">
+    <button data-sec="60">1:00</button>
+    <button data-sec="90">1:30</button>
+    <button data-sec="120">2:00</button>
+    <button data-sec="180">3:00</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ FORGE — offline training system ============ */
+/* Storage: localStorage when available (downloaded file / browser),
+   in-memory fallback so it still runs inside the Claude app preview. */
+const Store = (()=>{
+  let ok=false; try{localStorage.setItem('__t','1');localStorage.removeItem('__t');ok=true}catch(e){ok=false}
+  const mem={};
+  return {
+    get(k){ try{ return ok?localStorage.getItem(k):(k in mem?mem[k]:null) }catch(e){return null} },
+    set(k,v){ try{ ok?localStorage.setItem(k,v):mem[k]=v }catch(e){mem[k]=v} },
+    del(k){ try{ ok?localStorage.removeItem(k):delete mem[k] }catch(e){delete mem[k]} }
+  };
+})();
+
+/* ---------- DEFAULT PROGRAM DATA ---------- */
+const DEFAULTS = {
+  variants: {
+    "6": { title:"6-Day Split", days:[
+      { name:"Lower Power", focus:"Squat rebuild · explosive hip extension", tag:"Power", ex:[
+        {n:"Back Squat", note:"Start ~90kg · ceiling is RPE 8", s:"4×4–5", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Trap Bar Deadlift", note:"Strict form · no grinding reps", s:"4×3–5", rpe:"8", t:"X0X0", r:"3 min"},
+        {n:"Leg Press", s:"3×8–10", rpe:"8", t:"3010", r:"90s"},
+        {n:"Box Jump", note:"Full reset each rep", s:"4×5", rpe:"—", t:"Explosive", r:"2 min"},
+        {n:"Nordic Curl", s:"3×5–6", rpe:"8", t:"5010", r:"2 min"},
+      ], block:"<b>Power, not fatigue.</b> Box jumps build explosiveness — full reset between reps. Stop squats at RPE 8."},
+      { name:"Upper Push + Chest", focus:"Lower chest balance · shoulder volume", tag:"Push", ex:[
+        {n:"Incline Barbell Press", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Flat DB Press", s:"3×8–10", rpe:"8", t:"3011", r:"90s"},
+        {n:"Cable Fly (low-to-high)", note:"Targets lower chest", s:"3×12–15", rpe:"8", t:"2011", r:"60s"},
+        {n:"Seated DB Shoulder Press", s:"3×10–12", rpe:"8", t:"2010", r:"90s"},
+        {n:"Cable Lateral Raise", s:"4×15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Triceps Pushdown + OH Ext", s:"3×10 ea", rpe:"9", t:"2010", r:"60s"},
+      ], block:"Bench loads stay <b>sub-maximal</b> — maintenance, not maximisation. Low-to-high fly fixes the upper-chest dominance."},
+      { name:"Conditioning + Carries", focus:"Athletic capacity · grip · core", tag:"Cond", circuit:{
+        rounds:"4 rounds · 90s rest between", items:[
+          {nm:"Trap Bar / Farmer Carry", tg:"40m", intensity:"70% BW · form intact throughout"},
+          {nm:"Sled Push", tg:"20m", intensity:"Moderate · keep moving, never grinding"},
+          {nm:"Med Ball Slam", tg:"8 reps", intensity:"Max intent · every rep full speed"},
+          {nm:"Broad Jump", tg:"4 reps", intensity:"Max power · full reset each rep"},
+          {nm:"Battle Ropes", tg:"30s", intensity:"85–90% · hard but not collapsing"},
+        ], finish:"8–10 min Zone 2 bike or row · conversational pace · you can speak full sentences"},
+        block:"Directly transfers to wrestling & kickboxing patterns. Rotate slams/jumps weekly to keep it athletic."},
+      { name:"Lower Hypertrophy", focus:"Glute + ham focus · biggest weak point", tag:"Legs", ex:[
+        {n:"Barbell Hip Thrust", note:"1s pause + squeeze at top", s:"4×10–12", rpe:"9", t:"2031", r:"90s"},
+        {n:"Bulgarian Split Squat", note:"Your #1 lower-body builder", s:"4×8–10 ea", rpe:"8", t:"3010", r:"2 min"},
+        {n:"Seated Leg Curl", s:"4×10–12", rpe:"9", t:"3011", r:"75s"},
+        {n:"Romanian Deadlift", s:"3×10–12", rpe:"8", t:"3010", r:"90s"},
+        {n:"Leg Extension", s:"3×12–15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Standing Calf Raise", s:"4×12–15", rpe:"9", t:"2020", r:"60s"},
+      ], block:"<b>The priority session.</b> Glutes & hams are the power engine for combat sports. Calves get real volume here."},
+      { name:"Upper Pull + Back", focus:"Mid-back thickness · rear delts · traps", tag:"Pull", ex:[
+        {n:"Weighted Pull-Up", note:"Wrist straps", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Pendlay Row", note:"Explosive concentric", s:"4×5–6", rpe:"8", t:"X0X1", r:"2.5 min"},
+        {n:"Chest-Supported DB Row", note:"Elbows flared = mid-traps", s:"3×10–12", rpe:"8", t:"2011", r:"90s"},
+        {n:"Rear Delt Cable Fly", s:"4×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Face Pull", s:"3×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Barbell Curl", s:"3×8–10", rpe:"8", t:"2010", r:"75s"},
+        {n:"Hammer Curl", s:"2×12", rpe:"9", t:"2010", r:"60s"},
+      ], block:"High rear-delt volume is <b>intentional</b> — shoulder longevity & combat posture. Builds the thickness you're missing."},
+      { name:"Power + Weak Point", focus:"Explosive carry-over · glute/ham", tag:"Power", ex:[
+        {n:"Hang Power Clean", note:"Or trap-bar jump if technique off", s:"5×3", rpe:"7", t:"X0X0", r:"3 min"},
+        {n:"Goblet Jump Squat", note:"Light load · max speed", s:"4×5", rpe:"7", t:"X0X0", r:"2 min"},
+        {n:"Glute-Ham Raise / Nordic", s:"3×6", rpe:"8", t:"4010", r:"2 min"},
+        {n:"Single-Leg RDL (DB)", note:"Balance + proprioception", s:"3×8 ea", rpe:"8", t:"3010", r:"90s"},
+        {n:"Lateral Band Walk + Hip Circle", s:"2×20 ea", rpe:"—", t:"Control", r:"45s"},
+      ], block:"Speed & intent, <b>not fatigue</b>. Stop the moment power output drops. Single-leg RDL transfers straight to grappling."},
+      { name:"Rest", focus:"Full recovery", tag:"Rest", rest:true, restText:"Complete rest from training.<br>Prioritise sleep · nutrition · sunlight.<br>Optional: 10 min mobility (hips, T-spine, ankles)."},
+    ]},
+    "5": { title:"5-Day Compressed", days:[
+      { name:"Lower Power", focus:"Strength + explosive base", tag:"Power", ex:[
+        {n:"Back Squat", note:"RPE 8 ceiling", s:"4×4–5", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Trap Bar Deadlift", note:"Strict form", s:"3×3–5", rpe:"8", t:"X0X0", r:"3 min"},
+        {n:"Box Jump", note:"Full reset", s:"4×5", rpe:"—", t:"Explosive", r:"2 min"},
+        {n:"Leg Press", s:"3×8–10", rpe:"8", t:"3010", r:"90s"},
+        {n:"Nordic Curl", s:"3×6", rpe:"8", t:"5010", r:"2 min"},
+      ], block:"Power + strength merged. Jumps before grind work while fresh."},
+      { name:"Upper Push", focus:"Press strength · chest balance · delts", tag:"Push", ex:[
+        {n:"Incline Barbell Press", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Flat DB Press", s:"3×8–10", rpe:"8", t:"3011", r:"90s"},
+        {n:"Cable Fly (low-to-high)", s:"3×12–15", rpe:"8", t:"2011", r:"60s"},
+        {n:"Seated DB Shoulder Press", s:"3×10–12", rpe:"8", t:"2010", r:"90s"},
+        {n:"Lateral Raise", s:"3×15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Triceps Pushdown", s:"3×10–12", rpe:"9", t:"2010", r:"60s"},
+      ], block:"Lower-chest fly stays in to fix the imbalance."},
+      { name:"Conditioning + Carries", focus:"Athletic capacity · power", tag:"Cond", circuit:{
+        rounds:"4 rounds · 90s rest", items:[
+          {nm:"Farmer Carry", tg:"40m", intensity:"70% BW · form intact throughout"},
+          {nm:"Sled Push", tg:"20m", intensity:"Moderate · keep moving, never grinding"},
+          {nm:"Med Ball Slam", tg:"8 reps", intensity:"Max intent · every rep full speed"},
+          {nm:"Broad Jump", tg:"4 reps", intensity:"Max power · full reset each rep"},
+        ], finish:"8–10 min Zone 2 · conversational pace · full sentences"},
+        block:"Keeps the combat-sports engine primed in 5 days."},
+      { name:"Lower Hypertrophy", focus:"Glute + ham · weak point", tag:"Legs", ex:[
+        {n:"Barbell Hip Thrust", note:"Pause + squeeze", s:"4×10–12", rpe:"9", t:"2031", r:"90s"},
+        {n:"Bulgarian Split Squat", s:"4×8–10 ea", rpe:"8", t:"3010", r:"2 min"},
+        {n:"Seated Leg Curl", s:"3×10–12", rpe:"9", t:"3011", r:"75s"},
+        {n:"Romanian Deadlift", s:"3×10–12", rpe:"8", t:"3010", r:"90s"},
+        {n:"Standing Calf Raise", s:"4×12–15", rpe:"9", t:"2020", r:"60s"},
+      ], block:"<b>Priority day.</b> The posterior chain is the focus of the whole block."},
+      { name:"Upper Pull + Power", focus:"Back thickness · rear delts · explosive", tag:"Pull", ex:[
+        {n:"Weighted Pull-Up", note:"Straps", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Pendlay Row", note:"Explosive", s:"4×5–6", rpe:"8", t:"X0X1", r:"2.5 min"},
+        {n:"Chest-Supported Row", note:"Elbows flared", s:"3×10–12", rpe:"8", t:"2011", r:"90s"},
+        {n:"Rear Delt Cable Fly", s:"4×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Face Pull", s:"3×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Barbell Curl", s:"3×8–10", rpe:"8", t:"2010", r:"75s"},
+      ], block:"Power clean from Day 6 folds in here on heavy weeks if you want it — sub for first row set."},
+      { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Two rest days in this split (e.g. Wed + Sun).<br>Sleep, mobility, sunlight."},
+      { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Full rest. Let the posterior chain recover."},
+    ]},
+    "4": { title:"4-Day Minimal", days:[
+      { name:"Lower (Power + Strength)", focus:"Squat, hinge, jump — all in one", tag:"Lower", ex:[
+        {n:"Back Squat", note:"RPE 8 ceiling", s:"4×4–5", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Trap Bar Deadlift", s:"3×4–5", rpe:"8", t:"X0X0", r:"3 min"},
+        {n:"Box Jump", note:"Reset each rep", s:"4×4", rpe:"—", t:"Explosive", r:"2 min"},
+        {n:"Bulgarian Split Squat", s:"3×8 ea", rpe:"8", t:"3010", r:"90s"},
+        {n:"Seated Leg Curl", s:"3×10–12", rpe:"9", t:"3011", r:"75s"},
+        {n:"Standing Calf Raise", s:"3×15", rpe:"9", t:"2020", r:"60s"},
+      ], block:"Everything lower in one hit — strength, power, hypertrophy, weak-point all covered."},
+      { name:"Upper (Push Focus)", focus:"Press strength + chest + delts", tag:"Push", ex:[
+        {n:"Incline Barbell Press", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Weighted Pull-Up", note:"Straps · pull volume here too", s:"3×5–6", rpe:"8", t:"30X1", r:"2.5 min"},
+        {n:"Flat DB Press", s:"3×8–10", rpe:"8", t:"3011", r:"90s"},
+        {n:"Cable Fly (low-to-high)", s:"3×12–15", rpe:"8", t:"2011", r:"60s"},
+        {n:"Lateral Raise", s:"3×15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Triceps Pushdown", s:"3×10–12", rpe:"9", t:"2010", r:"60s"},
+      ], block:"Push-led but pull-ups slot in to keep weekly pull volume up across only 4 days."},
+      { name:"Conditioning + Carries", focus:"Athletic engine · optional", tag:"Cond", circuit:{
+        rounds:"3–4 rounds · 90s rest", items:[
+          {nm:"Farmer Carry", tg:"40m", intensity:"70% BW · form intact throughout"},
+          {nm:"Sled Push", tg:"20m", intensity:"Moderate · keep moving, never grinding"},
+          {nm:"Med Ball Slam", tg:"8 reps", intensity:"Max intent · every rep full speed"},
+          {nm:"Broad Jump", tg:"4 reps", intensity:"Max power · full reset each rep"},
+        ], finish:"8 min Zone 2 · conversational pace · full sentences"},
+        block:"On a tight week this is the droppable day — but it's what keeps you combat-ready."},
+      { name:"Upper (Pull + Back)", focus:"Back thickness · rear delts · arms", tag:"Pull", ex:[
+        {n:"Pendlay Row", note:"Explosive", s:"4×5–6", rpe:"8", t:"X0X1", r:"2.5 min"},
+        {n:"Chest-Supported Row", note:"Elbows flared", s:"3×10–12", rpe:"8", t:"2011", r:"90s"},
+        {n:"Seated DB Shoulder Press", s:"3×8–10", rpe:"8", t:"2010", r:"90s"},
+        {n:"Rear Delt Cable Fly", s:"4×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Face Pull", s:"3×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Barbell Curl", s:"3×10", rpe:"8", t:"2010", r:"75s"},
+        {n:"Hammer Curl", s:"2×12", rpe:"9", t:"2010", r:"60s"},
+      ], block:"Concentrated back-thickness + rear-delt work — your top visual weak point fixed in one session."},
+      { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"3 rest days across the week.<br>Space sessions: e.g. Mon/Tue/Thu/Fri.<br>Sleep & mobility on the off days."},
+      { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Full rest."},
+      { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Full rest."},
+    ]},
+  },
+  nutrition: {
+    macros: {
+      train:{ title:"Training Days", cal:2800, p:135, c:300, f:70 },
+      rest:{ title:"Rest Days", cal:2400, p:135, c:220, f:70 },
+    },
+    rule:"Hit protein <b>every single day</b> — 130–140g across 4 meals. If you do nothing else, do this.",
+    meals:[
+      {t:"Breakfast", when:"morning", c:"4–5 eggs + 2 slices sourdough, or 80g oats + fruit"},
+      {t:"Pre-Training", when:"60–90 min before", c:"Rice cake or banana + protein shake (30g)"},
+      {t:"Post-Training", when:"within 45 min", c:"Protein shake (40g) + rice or potato + fruit"},
+      {t:"Lunch", when:"midday", c:"Chicken or beef + large rice/pasta + veg"},
+      {t:"Dinner", when:"evening", c:"Chicken or beef + rice/sweet potato + veg + olive oil"},
+    ],
+    supps:[
+      {sn:"Creatine Monohydrate", sw:"Any time, daily", sd:"5g"},
+      {sn:"Omega-3 (EPA+DHA)", sw:"With lunch/dinner", sd:"2–3g"},
+      {sn:"Vitamin D3 + K2", sw:"With main meal", sd:"3000IU"},
+      {sn:"Magnesium Glycinate", sw:"30 min before bed", sd:"400mg"},
+      {sn:"Zinc Picolinate", sw:"Evening meal", sd:"20mg"},
+      {sn:"Caffeine", sw:"45 min pre-training · cut by 1pm", sd:"150–200mg"},
+      {sn:"Citrulline Malate", sw:"Pre-training", sd:"6–8g"},
+      {sn:"Ashwagandha KSM-66", sw:"Evening · stress + recovery", sd:"600mg"},
+    ],
+  },
+  recovery:[
+    {icon:"moon", t:"Sleep — your #1 lever", li:[
+      "7.5–8 hrs minimum, every night",
+      "Consistent wake time incl. weekends",
+      "Room 17–19°C, dark, no screens 45 min before bed",
+      "Magnesium before bed nightly",
+    ]},
+    {icon:"sun", t:"Daily habits", li:[
+      "Morning sunlight within 30 min of waking",
+      "10 min mobility on off days — hips, T-spine, ankles",
+    ]},
+    {icon:"snow", t:"Post-training", li:[
+      "Cold immersion 10–15 min after conditioning days only",
+      "Avoid cold after Days 1/4/6 — blunts muscle adaptation",
+      "Foam roll 5–10 min after every session",
+    ]},
+    {icon:"brain", t:"Stress management", li:[
+      "Business + training share one recovery budget",
+      "High-stress week → cut conditioning volume, keep the rest",
+      "5 min box breathing before sleep on hard days",
+    ]},
+  ],
+  weak:[
+    {a:"Glutes", w:"Engine of explosive movement", fix:"Hip thrust · Bulgarian SS · Day 6"},
+    {a:"Hamstrings", w:"Injury risk + power transfer", fix:"Nordic · leg curl · RDL · SL-RDL"},
+    {a:"Mid-back thickness", w:"Combat posture, shoulder health", fix:"Pendlay & chest-supported rows"},
+    {a:"Rear delts", w:"Shoulder longevity, wrestling frames", fix:"4 sets every pull day"},
+    {a:"Calves", w:"Athletic completeness, ankle stability", fix:"Dedicated volume Days 1 + 4"},
+    {a:"Lower chest", w:"Minor cosmetic imbalance", fix:"Low-to-high cable fly"},
+  ],
+  kpis:[
+    {h:"Relative Strength Index", p:"One lower + one upper lift, tracked weekly. At 61kg these should move every 1–2 weeks in accumulation. Stalls = check sleep & calories first, programming second."},
+    {h:"Power Output Quality", p:"Rate explosiveness 1–10 after every jump/power session. Below 7 for two sessions running = drop conditioning volume, your nervous system is taxed."},
+    {h:"Bodyweight + Visual", p:"Don't drop below 61kg. Target stable or +0.5–1kg over 12 weeks. Photo every 4 weeks, same conditions. Goal: legs visibly catch up to upper body by week 12."},
+  ],
+  phases:[
+    {wk:[1,2,3,4], label:"Accumulation", cls:"acc"},
+    {wk:[5,6,7,8], label:"Intensification", cls:"acc"},
+    {wk:[9,10,11], label:"Realisation", cls:"acc"},
+    {wk:[12], label:"Deload", cls:"deload"},
+  ],
+};
+
+/* ---------- STATE ---------- */
+let DATA = load();
+let editMode = false;
+let curVariant = "6";
+let curView = "train";
+
+function load(){
+  const saved = Store.get('forge_data');
+  if(saved){ try{ return JSON.parse(saved) }catch(e){} }
+  return JSON.parse(JSON.stringify(DEFAULTS));
+}
+function save(){ Store.set('forge_data', JSON.stringify(DATA)); }
+function resetData(){ Store.del('forge_data'); DATA = JSON.parse(JSON.stringify(DEFAULTS)); }
+
+/* ---------- ICONS ---------- */
+const ICON = {
+  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>',
+  snow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M4 7l16 10M20 7 4 17"/></svg>',
+  brain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 5 1V4a1 1 0 0 0-1-1ZM15 3a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-5 1V4a1 1 0 0 1 1-1Z"/></svg>',
+};
+
+/* ---------- RENDER: phase strip ---------- */
+function renderPhase(){
+  const strip = document.getElementById('phaseStrip');
+  let html='';
+  DATA.phases.forEach(ph=>{
+    html += `<span class="phase-label">${ph.label}</span>`;
+    ph.wk.forEach(w=>{
+      html += `<span class="wk ${ph.cls}" data-wk="${w}">${w}</span>`;
+    });
+  });
+  strip.innerHTML = html;
+  const cur = parseInt(Store.get('forge_week')||"1");
+  setWeek(cur,false);
+  strip.querySelectorAll('.wk').forEach(el=>{
+    el.onclick=()=>setWeek(parseInt(el.dataset.wk),true);
+  });
+}
+function setWeek(w,scroll){
+  document.querySelectorAll('.wk').forEach(el=>el.classList.toggle('on', parseInt(el.dataset.wk)===w));
+  Store.set('forge_week', w);
+  if(scroll){
+    const el=document.querySelector(`.wk[data-wk="${w}"]`);
+    if(el) el.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
+  }
+}
+
+/* ---------- RENDER: training days ---------- */
+const DAYNAMES=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+function renderDays(){
+  const wrap=document.getElementById('daysWrap');
+  const v=DATA.variants[curVariant];
+  document.getElementById('variantTitle').textContent=v.title;
+  wrap.innerHTML='';
+  v.days.forEach((d,di)=>{
+    const card=document.createElement('div');
+    card.className='day'+(d.rest?' rest':'')+(di===0?' open':'');
+    let bodyHtml='';
+    if(d.rest){
+      bodyHtml=`<div class="rest-body">${d.restText||'Full rest.'}</div>`;
+    } else if(d.circuit){
+      let items=d.circuit.items.map((it,ii)=>{
+        if(editMode){
+          return `<div class="ci"><input class="name-in cond-nm" data-di="${di}" data-ii="${ii}" value="${esc(it.nm)}" style="border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:13px;font-weight:600;flex:1;margin-right:8px"><input class="cond-tg" data-di="${di}" data-ii="${ii}" value="${esc(it.tg)}" style="width:70px;border:1px solid var(--line);border-radius:7px;padding:6px;font-size:12px;font-weight:700;text-align:center"></div>`;
+        }
+        return `<div class="ci">
+          <div class="ci-l">
+            <span class="nm">${esc(it.nm)}</span>
+            ${it.intensity?`<span class="ci-int">${esc(it.intensity)}</span>`:''}
+          </div>
+          <span class="tg">${esc(it.tg)}</span>
+        </div>`;
+      }).join('');
+      bodyHtml=`<div class="circuit">
+        <div class="pill" style="margin:12px 0 4px;display:inline-block">${esc(d.circuit.rounds)}</div>
+        ${items}
+        <div class="ci">
+          <div class="ci-l">
+            <span class="nm" style="color:var(--muted)">Finisher</span>
+            <span class="ci-int">${esc(d.circuit.finish)}</span>
+          </div>
+        </div>
+      </div>`;
+      if(d.block) bodyHtml+=`<div class="block-note">${d.block}</div>`;
+    } else {
+      let rows=d.ex.map((e,ei)=>exRow(e,di,ei)).join('');
+      bodyHtml=`<div class="exhead"><span>Exercise</span><span>Sets×Reps</span><span>RPE</span><span>Tempo</span><span>Rest</span><span></span></div>${rows}`;
+      if(editMode){
+        bodyHtml+=`<div class="add-row"><button data-add="${di}">${ICON.plus} Add exercise</button></div>`;
+      }
+      if(d.block) bodyHtml+=`<div class="block-note">${d.block}</div>`;
+    }
+    card.innerHTML=`
+      <div class="day-head">
+        <div class="l">
+          <div class="daynum">${d.rest?'·':DAYNAMES[di]}</div>
+          <div class="dt"><h3>${esc(d.name)}</h3><div class="focus">${esc(d.focus)}</div></div>
+        </div>
+        <div class="r"><span class="pill">${d.tag}</span>${ICON.chev}</div>
+      </div>
+      <div class="day-body">${bodyHtml}</div>`;
+    card.querySelector('.day-head').onclick=(e)=>{
+      if(e.target.closest('input'))return;
+      card.classList.toggle('open');
+    };
+    wrap.appendChild(card);
+  });
+  bindEditing();
+  bindRestTaps();
+}
+function exRow(e,di,ei){
+  if(editMode){
+    return `<div class="ex editing">
+      <input class="name-in" data-f="n" data-di="${di}" data-ei="${ei}" value="${esc(e.n)}" placeholder="Exercise">
+      <input data-f="s" data-di="${di}" data-ei="${ei}" value="${esc(e.s)}" placeholder="4×5">
+      <input data-f="rpe" data-di="${di}" data-ei="${ei}" value="${esc(e.rpe||'8')}" placeholder="8">
+      <input data-f="t" data-di="${di}" data-ei="${ei}" value="${esc(e.t)}" placeholder="30X1">
+      <input data-f="r" data-di="${di}" data-ei="${ei}" value="${esc(e.r)}" placeholder="3 min">
+      <div class="del"><button data-del-di="${di}" data-del-ei="${ei}">${ICON.trash}</button></div>
+    </div>`;
+  }
+  const rpeVal = e.rpe||'8';
+  const isDash = rpeVal==='—'||rpeVal==='-'||rpeVal==='';
+  return `<div class="ex">
+    <div class="name">${esc(e.n)}${e.note?`<span class="note">${esc(e.note)}</span>`:''}</div>
+    <div class="cell sets"><span class="v">${esc(e.s)}</span></div>
+    <div class="cell rpe"><span class="v${isDash?' dash':''}">${isDash?'—':'RPE '+esc(rpeVal)}</span></div>
+    <div class="cell tempo"><span class="v">${esc(e.t)}</span></div>
+    <div class="cell rest"><span class="v" data-rest="${esc(e.r)}">${esc(e.r)}</span></div>
+    <div class="del"></div>
+  </div>`;
+}
+function bindEditing(){
+  document.querySelectorAll('#daysWrap input[data-f]').forEach(inp=>{
+    inp.oninput=()=>{
+      const{f,di,ei}=inp.dataset;
+      DATA.variants[curVariant].days[di].ex[ei][f]=inp.value;
+      save();
+    };
+  });
+  document.querySelectorAll('#daysWrap .cond-nm').forEach(inp=>{
+    inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].nm=inp.value;save();};
+  });
+  document.querySelectorAll('#daysWrap .cond-tg').forEach(inp=>{
+    inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].tg=inp.value;save();};
+  });
+  document.querySelectorAll('#daysWrap [data-del-di]').forEach(b=>{
+    b.onclick=()=>{
+      const di=b.dataset.delDi,ei=+b.dataset.delEi;
+      DATA.variants[curVariant].days[di].ex.splice(ei,1);save();renderDays();keepOpen(di);
+    };
+  });
+  document.querySelectorAll('#daysWrap [data-add]').forEach(b=>{
+    b.onclick=()=>{
+      const di=b.dataset.add;
+      DATA.variants[curVariant].days[di].ex.push({n:"New exercise",s:"3×10",t:"2010",r:"90s"});
+      save();renderDays();keepOpen(di);
+    };
+  });
+}
+function keepOpen(di){
+  const cards=document.querySelectorAll('#daysWrap .day');
+  if(cards[di])cards[di].classList.add('open');
+}
+function bindRestTaps(){
+  if(editMode)return;
+  document.querySelectorAll('#daysWrap [data-rest]').forEach(el=>{
+    el.onclick=(e)=>{
+      e.stopPropagation();
+      const secs=parseRest(el.dataset.rest);
+      if(secs){ Timer.open(secs, el.dataset.rest); }
+    };
+  });
+}
+function parseRest(str){
+  if(!str)return 0;
+  str=str.toLowerCase().trim();
+  // "3 min" / "2.5 min"
+  let m=str.match(/([\d.]+)\s*min/);
+  if(m)return Math.round(parseFloat(m[1])*60);
+  // "90s" / "75s" / "60s"
+  m=str.match(/([\d.]+)\s*s/);
+  if(m)return Math.round(parseFloat(m[1]));
+  // bare number = seconds
+  m=str.match(/^([\d.]+)$/);
+  if(m)return Math.round(parseFloat(m[1]));
+  return 0;
+}
+
+/* ---------- RENDER: nutrition ---------- */
+function renderNutrition(){
+  const g=document.getElementById('macroGrid');
+  g.innerHTML='';
+  ['train','rest'].forEach(key=>{
+    const m=DATA.nutrition.macros[key];
+    g.innerHTML+=`<div class="mcard">
+      <h4>${esc(m.title)}</h4>
+      ${mrow(key,'cal','Calories',m.cal,'kcal')}
+      ${mrow(key,'p','Protein',m.p,'g',true)}
+      ${mrow(key,'c','Carbs',m.c,'g')}
+      ${mrow(key,'f','Fats',m.f,'g')}
+    </div>`;
+  });
+  g.querySelectorAll('input').forEach(inp=>{
+    inp.oninput=()=>{DATA.nutrition.macros[inp.dataset.key][inp.dataset.m]=inp.value;save();};
+  });
+  document.getElementById('oneRule').innerHTML=DATA.nutrition.rule;
+
+  const mw=document.getElementById('mealsWrap');
+  mw.innerHTML=DATA.nutrition.meals.map((m,i)=>`
+    <div class="meal">
+      <div class="mh"><span class="mt">${esc(m.t)}</span><span class="when">${esc(m.when)}</span></div>
+      <div class="mc" contenteditable="true" data-meal="${i}">${esc(m.c)}</div>
+    </div>`).join('');
+  mw.querySelectorAll('.mc').forEach(el=>{
+    el.onblur=()=>{DATA.nutrition.meals[el.dataset.meal].c=el.innerText;save();};
+  });
+
+  const sw=document.getElementById('suppWrap');
+  sw.innerHTML=DATA.nutrition.supps.map(s=>`
+    <div class="supp"><div class="sl"><div class="sn">${esc(s.sn)}</div><div class="sw">${esc(s.sw)}</div></div><div class="sd">${esc(s.sd)}</div></div>`).join('');
+}
+function mrow(key,m,label,val,u,prot){
+  return `<div class="mrow"><span class="k">${label}</span><span class="val"><input data-key="${key}" data-m="${m}" value="${val}" inputmode="numeric"${prot?' class="prot"':''}><span class="u">${u}</span></span></div>`;
+}
+
+/* ---------- RENDER: recovery ---------- */
+function renderRecovery(){
+  const w=document.getElementById('recoveryWrap');
+  w.innerHTML=DATA.recovery.map(r=>`
+    <div class="info"><h4><span class="ic">${ICON[r.icon]||''}</span>${esc(r.t)}</h4>
+      <ul>${r.li.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+  const ww=document.getElementById('weakWrap');
+  ww.innerHTML=DATA.weak.map(x=>`
+    <div class="supp"><div class="sl"><div class="sn">${esc(x.a)}</div><div class="sw">${esc(x.w)}</div></div><div class="sd" style="font-size:11px;text-align:right;max-width:130px;white-space:normal;line-height:1.3">${esc(x.fix)}</div></div>`).join('');
+}
+
+/* ---------- RENDER: track ---------- */
+function renderTrack(){
+  const kw=document.getElementById('kpiWrap');
+  kw.innerHTML=DATA.kpis.map((k,i)=>`
+    <div class="kpi"><div class="kt"><div class="kn">${i+1}</div><h4>${esc(k.h)}</h4></div><p>${esc(k.p)}</p></div>`).join('');
+  renderLogs();
+}
+function renderLogs(){
+  const logs=JSON.parse(Store.get('forge_logs')||'[]');
+  const el=document.getElementById('logList');
+  if(!logs.length){el.innerHTML='<div style="text-align:center;color:var(--muted);font-size:12px;padding:14px 0">No entries yet — log your first week above.</div>';return;}
+  el.innerHTML=logs.slice().reverse().map(l=>`
+    <div class="log-item">
+      <span class="ld">${l.date}</span>
+      <span class="lv">${l.lower||'–'}<span>·</span>${l.upper||'–'}<span>·</span>${l.bw||'–'}kg<span>·</span>P${l.power||'–'}<span>/</span>S${l.sleep||'–'}<span>/</span>E${l.energy||'–'}</span>
+    </div>`).join('');
+}
+function saveLog(){
+  const logs=JSON.parse(Store.get('forge_logs')||'[]');
+  const get=id=>document.getElementById(id).value.trim();
+  const entry={
+    date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'}),
+    lower:get('logLower'),upper:get('logUpper'),bw:get('logBw'),
+    power:get('logPower'),sleep:get('logSleep'),energy:get('logEnergy'),
+  };
+  if(!entry.lower&&!entry.upper&&!entry.bw){toast('Enter at least one value');return;}
+  logs.push(entry);Store.set('forge_logs',JSON.stringify(logs));
+  ['logLower','logUpper','logBw','logPower','logSleep','logEnergy'].forEach(id=>document.getElementById(id).value='');
+  renderLogs();toast('Week saved ✓');
+}
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+/* ---------- wiring ---------- */
+function switchView(v){
+  curView=v;
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  document.querySelectorAll('#nav button, #topnav button').forEach(b=>b.classList.toggle('on',b.dataset.view===v));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('#nav button, #topnav button').forEach(b=>{
+  b.onclick=()=>switchView(b.dataset.view);
+});
+document.getElementById('variantSeg').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{
+    curVariant=b.dataset.v;
+    document.querySelectorAll('#variantSeg button').forEach(x=>x.classList.toggle('on',x===b));
+    renderDays();
+  };
+});
+document.getElementById('editToggle').onclick=function(){
+  editMode=!editMode;
+  this.classList.toggle('on',editMode);
+  this.childNodes[this.childNodes.length-1].textContent=editMode?' Done':' Edit';
+  renderDays();
+  toast(editMode?'Edit mode — change anything':'Saved');
+};
+document.getElementById('logSave').onclick=saveLog;
+document.getElementById('resetBtn').onclick=()=>{
+  if(confirm('Reset everything back to the original plan? Your edits and logs will be cleared.')){
+    resetData();Store.del('forge_logs');
+    renderAll();toast('Reset to original plan');
+  }
+};
+
+/* ---------- REST TIMER ---------- */
+const Timer = (()=>{
+  let total=120, left=120, running=false, tick=null, ac=null;
+  const el=()=>document.getElementById('timer');
+  const disp=()=>document.getElementById('timerDisp');
+  const bar=()=>document.getElementById('timerBar');
+  function fmt(s){const m=Math.floor(s/60),ss=s%60;return m+':'+String(ss).padStart(2,'0');}
+  function paint(){
+    disp().textContent=fmt(Math.max(0,left));
+    bar().style.width=(total?Math.max(0,left)/total*100:0)+'%';
+    disp().classList.toggle('done',left<=0);
+  }
+  function open(secs,label){
+    total=left=secs;
+    document.getElementById('timerLbl').textContent=label?('Rest · '+label):'Rest Timer';
+    disp().classList.remove('done');
+    paint();
+    el().classList.add('up');
+    start();
+  }
+  function start(){
+    if(running)return;
+    running=true;
+    document.getElementById('timerToggle').textContent='Pause';
+    tick=setInterval(()=>{
+      left--;paint();
+      if(left<=0){done();}
+    },1000);
+  }
+  function pause(){
+    running=false;clearInterval(tick);
+    document.getElementById('timerToggle').textContent=left<=0?'Start':'Resume';
+  }
+  function toggle(){
+    if(left<=0){left=total;paint();start();return;}
+    running?pause():start();
+  }
+  function done(){
+    pause();
+    document.getElementById('timerToggle').textContent='Restart';
+    beep();vibrate();
+    toast('Rest complete — go');
+  }
+  function adj(d){
+    left=Math.max(0,left+d);
+    if(left>total)total=left;
+    paint();
+  }
+  function set(secs){total=left=secs;document.getElementById('timerLbl').textContent='Rest Timer';paint();start();}
+  function close(){pause();el().classList.remove('up');}
+  function beep(){
+    try{
+      ac=ac||new(window.AudioContext||window.webkitAudioContext)();
+      [0,180,360].forEach(t=>{
+        const o=ac.createOscillator(),g=ac.createGain();
+        o.connect(g);g.connect(ac.destination);
+        o.frequency.value=880;o.type='sine';
+        const s=ac.currentTime+t/1000;
+        g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.3,s+.02);
+        g.gain.linearRampToValueAtTime(0,s+.14);
+        o.start(s);o.stop(s+.15);
+      });
+    }catch(e){}
+  }
+  function vibrate(){try{navigator.vibrate&&navigator.vibrate([120,60,120,60,200]);}catch(e){}}
+  return {open,set,toggle,adj,close};
+})();
+document.getElementById('timerFab').onclick=()=>{
+  const t=document.getElementById('timer');
+  if(t.classList.contains('up')){Timer.close();}else{Timer.open(120,null);}
+};
+document.getElementById('timerClose').onclick=()=>Timer.close();
+document.getElementById('timerToggle').onclick=()=>Timer.toggle();
+document.getElementById('timerMinus').onclick=()=>Timer.adj(-15);
+document.getElementById('timerPlus').onclick=()=>Timer.adj(15);
+document.querySelectorAll('#timer .quick button').forEach(b=>{
+  b.onclick=()=>Timer.set(parseInt(b.dataset.sec));
+});
+
+/* ---------- init ---------- */
+function renderAll(){
+  renderPhase();renderDays();renderNutrition();renderRecovery();renderTrack();
+}
+renderAll();
+
+</script>
+</body>
+</html>
