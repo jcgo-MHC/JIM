@@ -108,12 +108,16 @@ main{max-width:760px;margin:0 auto;padding:6px 14px 40px}
 
 /* Conditioning circuit */
 .circuit{padding:6px 14px 14px}
-.circuit .ci{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.ci-head{display:grid;grid-template-columns:1fr 1.2fr 56px;gap:8px;padding:8px 0 4px;border-bottom:1px solid var(--line-2)}
+.ci-head span{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ci-head span:last-child{text-align:right}
+.circuit .ci{display:grid;grid-template-columns:1fr 1.2fr 56px;gap:8px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-2)}
 .circuit .ci:last-child{border-bottom:0}
-.circuit .ci-l{display:flex;flex-direction:column;gap:2px;min-width:0}
 .circuit .ci .nm{font-size:13.5px;font-weight:600}
+.circuit .ci-int-inline{font-size:11px;color:var(--muted);font-weight:500;line-height:1.35}
+.circuit .ci .tg{font-size:12px;font-weight:800;color:var(--accent);font-family:"SF Mono",monospace;text-align:right}
+.circuit .ci-l{display:flex;flex-direction:column;gap:2px;min-width:0}
 .circuit .ci-int{font-size:11px;color:var(--muted);font-weight:500;line-height:1.3}
-.circuit .ci .tg{font-size:12px;font-weight:700;color:var(--accent);font-family:"SF Mono",monospace;flex:0 0 auto;padding-left:12px}
 
 /* Rest day */
 .rest-body{padding:18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
@@ -704,24 +708,30 @@ function renderDays(){
     } else if(d.circuit){
       let items=d.circuit.items.map((it,ii)=>{
         if(editMode){
-          return `<div class="ci"><input class="name-in cond-nm" data-di="${di}" data-ii="${ii}" value="${esc(it.nm)}" style="border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:13px;font-weight:600;flex:1;margin-right:8px"><input class="cond-tg" data-di="${di}" data-ii="${ii}" value="${esc(it.tg)}" style="width:70px;border:1px solid var(--line);border-radius:7px;padding:6px;font-size:12px;font-weight:700;text-align:center"></div>`;
+          return `<div class="ci">
+            <input class="name-in cond-nm" data-di="${di}" data-ii="${ii}" value="${esc(it.nm)}" style="border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:13px;font-weight:600;flex:1;margin-right:6px">
+            <input class="cond-int" data-di="${di}" data-ii="${ii}" value="${esc(it.intensity||'')}" placeholder="intensity cue" style="border:1px solid var(--line);border-radius:7px;padding:6px 7px;font-size:11px;flex:1.2;margin-right:6px;color:var(--muted)">
+            <input class="cond-tg" data-di="${di}" data-ii="${ii}" value="${esc(it.tg)}" style="width:56px;border:1px solid var(--line);border-radius:7px;padding:6px;font-size:12px;font-weight:700;text-align:center;flex:0 0 auto">
+          </div>`;
         }
         return `<div class="ci">
-          <div class="ci-l">
-            <span class="nm">${esc(it.nm)}</span>
-            ${it.intensity?`<span class="ci-int">${esc(it.intensity)}</span>`:''}
-          </div>
+          <span class="nm">${esc(it.nm)}</span>
+          <span class="ci-int-inline">${esc(it.intensity||'')}</span>
           <span class="tg">${esc(it.tg)}</span>
         </div>`;
       }).join('');
       bodyHtml=`<div class="circuit">
-        <div class="pill" style="margin:12px 0 4px;display:inline-block">${esc(d.circuit.rounds)}</div>
+        <div class="ci-head">
+          <span>Exercise</span>
+          <span>Intensity</span>
+          <span>Target</span>
+        </div>
+        <div class="pill" style="margin:4px 0 6px;display:inline-block">${esc(d.circuit.rounds)}</div>
         ${items}
         <div class="ci">
-          <div class="ci-l">
-            <span class="nm" style="color:var(--muted)">Finisher</span>
-            <span class="ci-int">${esc(d.circuit.finish)}</span>
-          </div>
+          <span class="nm" style="color:var(--muted)">Finisher</span>
+          <span class="ci-int-inline">${esc(d.circuit.finish)}</span>
+          <span class="tg"></span>
         </div>
       </div>`;
       if(d.block) bodyHtml+=`<div class="block-note">${d.block}</div>`;
@@ -786,6 +796,9 @@ function bindEditing(){
   });
   document.querySelectorAll('#daysWrap .cond-tg').forEach(inp=>{
     inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].tg=inp.value;save();};
+  });
+  document.querySelectorAll('#daysWrap .cond-int').forEach(inp=>{
+    inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].intensity=inp.value;save();};
   });
   document.querySelectorAll('#daysWrap [data-del-di]').forEach(b=>{
     b.onclick=()=>{
