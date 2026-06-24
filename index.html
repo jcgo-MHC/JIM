@@ -80,15 +80,17 @@ main{max-width:760px;margin:0 auto;padding:6px 14px 40px}
 .day.open .day-body{display:block}
 
 /* Exercise table */
-.exhead{display:grid;grid-template-columns:1fr 56px 60px 50px 34px;gap:6px;padding:9px 14px 7px;align-items:end}
+.exhead{display:grid;grid-template-columns:1fr 56px 44px 60px 50px 34px;gap:6px;padding:9px 14px 7px;align-items:end}
 .exhead span{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .exhead span:not(:first-child){text-align:center}
-.ex{display:grid;grid-template-columns:1fr 56px 60px 50px 34px;gap:6px;padding:11px 14px;align-items:center;border-top:1px solid var(--line-2)}
+.ex{display:grid;grid-template-columns:1fr 56px 44px 60px 50px 34px;gap:6px;padding:11px 14px;align-items:center;border-top:1px solid var(--line-2)}
 .ex .name{font-size:13.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
 .ex .name .note{display:block;font-size:10.5px;color:var(--muted);font-weight:500;margin-top:2px}
 .ex .cell{text-align:center}
 .ex .cell .v{font-size:13px;font-weight:700}
 .ex .cell.sets .v{color:var(--ink)}
+.ex .cell.rpe .v{font-size:12px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 5px;display:inline-block}
+.ex .cell.rpe .v.dash{color:var(--muted);background:transparent;font-weight:600}
 .ex .cell.tempo .v{font-size:12px;color:var(--ink-2);font-family:"SF Mono",ui-monospace,monospace}
 .ex .cell.rest .v{font-size:12px;color:var(--ink-2)}
 .ex .del{display:flex;align-items:center;justify-content:center}
@@ -237,7 +239,7 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
   #kpiWrap .kpi{margin-bottom:0}
   .timer{bottom:28px}
   /* exercise rows breathe more */
-  .exhead,.ex{grid-template-columns:1fr 80px 80px 70px 40px;padding-left:18px;padding-right:18px}
+  .exhead,.ex{grid-template-columns:1fr 80px 54px 80px 70px 40px;padding-left:18px;padding-right:18px}
   .ex .name{font-size:14.5px}
   .day-head{padding:17px 20px}
 }
@@ -436,19 +438,19 @@ const DEFAULTS = {
   variants: {
     "6": { title:"6-Day Split", days:[
       { name:"Lower Power", focus:"Squat rebuild · explosive hip extension", tag:"Power", ex:[
-        {n:"Back Squat", note:"Start ~90kg · RPE 8 ceiling", s:"4×4–5", t:"30X1", r:"3 min"},
-        {n:"Trap Bar Deadlift", note:"RPE 8 · strict form", s:"4×3–5", t:"X0X0", r:"3 min"},
-        {n:"Leg Press", s:"3×8–10", t:"3010", r:"90s"},
-        {n:"Box Jump", note:"Full reset each rep", s:"4×5", t:"Explosive", r:"2 min"},
-        {n:"Nordic Curl", s:"3×5–6", t:"5010", r:"2 min"},
+        {n:"Back Squat", note:"Start ~90kg · ceiling is RPE 8", s:"4×4–5", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Trap Bar Deadlift", note:"Strict form · no grinding reps", s:"4×3–5", rpe:"8", t:"X0X0", r:"3 min"},
+        {n:"Leg Press", s:"3×8–10", rpe:"8", t:"3010", r:"90s"},
+        {n:"Box Jump", note:"Full reset each rep", s:"4×5", rpe:"—", t:"Explosive", r:"2 min"},
+        {n:"Nordic Curl", s:"3×5–6", rpe:"8", t:"5010", r:"2 min"},
       ], block:"<b>Power, not fatigue.</b> Box jumps build explosiveness — full reset between reps. Stop squats at RPE 8."},
       { name:"Upper Push + Chest", focus:"Lower chest balance · shoulder volume", tag:"Push", ex:[
-        {n:"Incline Barbell Press", s:"4×4–6", t:"30X1", r:"3 min"},
-        {n:"Flat DB Press", s:"3×8–10", t:"3011", r:"90s"},
-        {n:"Cable Fly (low-to-high)", note:"Targets lower chest", s:"3×12–15", t:"2011", r:"60s"},
-        {n:"Seated DB Shoulder Press", s:"3×10–12", t:"2010", r:"90s"},
-        {n:"Cable Lateral Raise", s:"4×15", t:"2010", r:"60s"},
-        {n:"Triceps Pushdown + OH Ext", s:"3×10 ea", t:"2010", r:"60s"},
+        {n:"Incline Barbell Press", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Flat DB Press", s:"3×8–10", rpe:"8", t:"3011", r:"90s"},
+        {n:"Cable Fly (low-to-high)", note:"Targets lower chest", s:"3×12–15", rpe:"8", t:"2011", r:"60s"},
+        {n:"Seated DB Shoulder Press", s:"3×10–12", rpe:"8", t:"2010", r:"90s"},
+        {n:"Cable Lateral Raise", s:"4×15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Triceps Pushdown + OH Ext", s:"3×10 ea", rpe:"9", t:"2010", r:"60s"},
       ], block:"Bench loads stay <b>sub-maximal</b> — maintenance, not maximisation. Low-to-high fly fixes the upper-chest dominance."},
       { name:"Conditioning + Carries", focus:"Athletic capacity · grip · core", tag:"Cond", circuit:{
         rounds:"4 rounds · 90s rest between", items:[
@@ -460,46 +462,46 @@ const DEFAULTS = {
         ], finish:"8–10 min Zone 2 bike or row"},
         block:"Directly transfers to wrestling & kickboxing patterns. Rotate slams/jumps weekly to keep it athletic."},
       { name:"Lower Hypertrophy", focus:"Glute + ham focus · biggest weak point", tag:"Legs", ex:[
-        {n:"Barbell Hip Thrust", note:"1s pause + squeeze at top", s:"4×10–12", t:"2031", r:"90s"},
-        {n:"Bulgarian Split Squat", note:"Your #1 lower-body builder", s:"4×8–10 ea", t:"3010", r:"2 min"},
-        {n:"Seated Leg Curl", s:"4×10–12", t:"3011", r:"75s"},
-        {n:"Romanian Deadlift", s:"3×10–12", t:"3010", r:"90s"},
-        {n:"Leg Extension", s:"3×12–15", t:"2010", r:"60s"},
-        {n:"Standing Calf Raise", s:"4×12–15", t:"2020", r:"60s"},
+        {n:"Barbell Hip Thrust", note:"1s pause + squeeze at top", s:"4×10–12", rpe:"9", t:"2031", r:"90s"},
+        {n:"Bulgarian Split Squat", note:"Your #1 lower-body builder", s:"4×8–10 ea", rpe:"8", t:"3010", r:"2 min"},
+        {n:"Seated Leg Curl", s:"4×10–12", rpe:"9", t:"3011", r:"75s"},
+        {n:"Romanian Deadlift", s:"3×10–12", rpe:"8", t:"3010", r:"90s"},
+        {n:"Leg Extension", s:"3×12–15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Standing Calf Raise", s:"4×12–15", rpe:"9", t:"2020", r:"60s"},
       ], block:"<b>The priority session.</b> Glutes & hams are the power engine for combat sports. Calves get real volume here."},
       { name:"Upper Pull + Back", focus:"Mid-back thickness · rear delts · traps", tag:"Pull", ex:[
-        {n:"Weighted Pull-Up", note:"Wrist straps", s:"4×4–6", t:"30X1", r:"3 min"},
-        {n:"Pendlay Row", note:"Explosive concentric", s:"4×5–6", t:"X0X1", r:"2.5 min"},
-        {n:"Chest-Supported DB Row", note:"Elbows flared = mid-traps", s:"3×10–12", t:"2011", r:"90s"},
-        {n:"Rear Delt Cable Fly", s:"4×15", t:"2011", r:"60s"},
-        {n:"Face Pull", s:"3×15", t:"2011", r:"60s"},
-        {n:"Barbell Curl", s:"3×8–10", t:"2010", r:"75s"},
-        {n:"Hammer Curl", s:"2×12", t:"2010", r:"60s"},
+        {n:"Weighted Pull-Up", note:"Wrist straps", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Pendlay Row", note:"Explosive concentric", s:"4×5–6", rpe:"8", t:"X0X1", r:"2.5 min"},
+        {n:"Chest-Supported DB Row", note:"Elbows flared = mid-traps", s:"3×10–12", rpe:"8", t:"2011", r:"90s"},
+        {n:"Rear Delt Cable Fly", s:"4×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Face Pull", s:"3×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Barbell Curl", s:"3×8–10", rpe:"8", t:"2010", r:"75s"},
+        {n:"Hammer Curl", s:"2×12", rpe:"9", t:"2010", r:"60s"},
       ], block:"High rear-delt volume is <b>intentional</b> — shoulder longevity & combat posture. Builds the thickness you're missing."},
       { name:"Power + Weak Point", focus:"Explosive carry-over · glute/ham", tag:"Power", ex:[
-        {n:"Hang Power Clean", note:"Or trap-bar jump if technique off", s:"5×3", t:"X0X0", r:"3 min"},
-        {n:"Goblet Jump Squat", note:"Light load", s:"4×5", t:"X0X0", r:"2 min"},
-        {n:"Glute-Ham Raise / Nordic", s:"3×6", t:"4010", r:"2 min"},
-        {n:"Single-Leg RDL (DB)", note:"Balance + proprioception", s:"3×8 ea", t:"3010", r:"90s"},
-        {n:"Lateral Band Walk + Hip Circle", s:"2×20 ea", t:"Control", r:"45s"},
+        {n:"Hang Power Clean", note:"Or trap-bar jump if technique off", s:"5×3", rpe:"7", t:"X0X0", r:"3 min"},
+        {n:"Goblet Jump Squat", note:"Light load · max speed", s:"4×5", rpe:"7", t:"X0X0", r:"2 min"},
+        {n:"Glute-Ham Raise / Nordic", s:"3×6", rpe:"8", t:"4010", r:"2 min"},
+        {n:"Single-Leg RDL (DB)", note:"Balance + proprioception", s:"3×8 ea", rpe:"8", t:"3010", r:"90s"},
+        {n:"Lateral Band Walk + Hip Circle", s:"2×20 ea", rpe:"—", t:"Control", r:"45s"},
       ], block:"Speed & intent, <b>not fatigue</b>. Stop the moment power output drops. Single-leg RDL transfers straight to grappling."},
       { name:"Rest", focus:"Full recovery", tag:"Rest", rest:true, restText:"Complete rest from training.<br>Prioritise sleep · nutrition · sunlight.<br>Optional: 10 min mobility (hips, T-spine, ankles)."},
     ]},
     "5": { title:"5-Day Compressed", days:[
       { name:"Lower Power", focus:"Strength + explosive base", tag:"Power", ex:[
-        {n:"Back Squat", note:"RPE 8 ceiling", s:"4×4–5", t:"30X1", r:"3 min"},
-        {n:"Trap Bar Deadlift", note:"Strict form", s:"3×3–5", t:"X0X0", r:"3 min"},
-        {n:"Box Jump", note:"Full reset", s:"4×5", t:"Explosive", r:"2 min"},
-        {n:"Leg Press", s:"3×8–10", t:"3010", r:"90s"},
-        {n:"Nordic Curl", s:"3×6", t:"5010", r:"2 min"},
+        {n:"Back Squat", note:"RPE 8 ceiling", s:"4×4–5", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Trap Bar Deadlift", note:"Strict form", s:"3×3–5", rpe:"8", t:"X0X0", r:"3 min"},
+        {n:"Box Jump", note:"Full reset", s:"4×5", rpe:"—", t:"Explosive", r:"2 min"},
+        {n:"Leg Press", s:"3×8–10", rpe:"8", t:"3010", r:"90s"},
+        {n:"Nordic Curl", s:"3×6", rpe:"8", t:"5010", r:"2 min"},
       ], block:"Power + strength merged. Jumps before grind work while fresh."},
       { name:"Upper Push", focus:"Press strength · chest balance · delts", tag:"Push", ex:[
-        {n:"Incline Barbell Press", s:"4×4–6", t:"30X1", r:"3 min"},
-        {n:"Flat DB Press", s:"3×8–10", t:"3011", r:"90s"},
-        {n:"Cable Fly (low-to-high)", s:"3×12–15", t:"2011", r:"60s"},
-        {n:"Seated DB Shoulder Press", s:"3×10–12", t:"2010", r:"90s"},
-        {n:"Lateral Raise", s:"3×15", t:"2010", r:"60s"},
-        {n:"Triceps Pushdown", s:"3×10–12", t:"2010", r:"60s"},
+        {n:"Incline Barbell Press", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Flat DB Press", s:"3×8–10", rpe:"8", t:"3011", r:"90s"},
+        {n:"Cable Fly (low-to-high)", s:"3×12–15", rpe:"8", t:"2011", r:"60s"},
+        {n:"Seated DB Shoulder Press", s:"3×10–12", rpe:"8", t:"2010", r:"90s"},
+        {n:"Lateral Raise", s:"3×15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Triceps Pushdown", s:"3×10–12", rpe:"9", t:"2010", r:"60s"},
       ], block:"Lower-chest fly stays in to fix the imbalance."},
       { name:"Conditioning + Carries", focus:"Athletic capacity · power", tag:"Cond", circuit:{
         rounds:"4 rounds · 90s rest", items:[
@@ -510,39 +512,39 @@ const DEFAULTS = {
         ], finish:"8–10 min Zone 2"},
         block:"Keeps the combat-sports engine primed in 5 days."},
       { name:"Lower Hypertrophy", focus:"Glute + ham · weak point", tag:"Legs", ex:[
-        {n:"Barbell Hip Thrust", note:"Pause + squeeze", s:"4×10–12", t:"2031", r:"90s"},
-        {n:"Bulgarian Split Squat", s:"4×8–10 ea", t:"3010", r:"2 min"},
-        {n:"Seated Leg Curl", s:"3×10–12", t:"3011", r:"75s"},
-        {n:"Romanian Deadlift", s:"3×10–12", t:"3010", r:"90s"},
-        {n:"Standing Calf Raise", s:"4×12–15", t:"2020", r:"60s"},
+        {n:"Barbell Hip Thrust", note:"Pause + squeeze", s:"4×10–12", rpe:"9", t:"2031", r:"90s"},
+        {n:"Bulgarian Split Squat", s:"4×8–10 ea", rpe:"8", t:"3010", r:"2 min"},
+        {n:"Seated Leg Curl", s:"3×10–12", rpe:"9", t:"3011", r:"75s"},
+        {n:"Romanian Deadlift", s:"3×10–12", rpe:"8", t:"3010", r:"90s"},
+        {n:"Standing Calf Raise", s:"4×12–15", rpe:"9", t:"2020", r:"60s"},
       ], block:"<b>Priority day.</b> The posterior chain is the focus of the whole block."},
       { name:"Upper Pull + Power", focus:"Back thickness · rear delts · explosive", tag:"Pull", ex:[
-        {n:"Weighted Pull-Up", note:"Straps", s:"4×4–6", t:"30X1", r:"3 min"},
-        {n:"Pendlay Row", note:"Explosive", s:"4×5–6", t:"X0X1", r:"2.5 min"},
-        {n:"Chest-Supported Row", note:"Elbows flared", s:"3×10–12", t:"2011", r:"90s"},
-        {n:"Rear Delt Cable Fly", s:"4×15", t:"2011", r:"60s"},
-        {n:"Face Pull", s:"3×15", t:"2011", r:"60s"},
-        {n:"Barbell Curl", s:"3×8–10", t:"2010", r:"75s"},
+        {n:"Weighted Pull-Up", note:"Straps", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Pendlay Row", note:"Explosive", s:"4×5–6", rpe:"8", t:"X0X1", r:"2.5 min"},
+        {n:"Chest-Supported Row", note:"Elbows flared", s:"3×10–12", rpe:"8", t:"2011", r:"90s"},
+        {n:"Rear Delt Cable Fly", s:"4×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Face Pull", s:"3×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Barbell Curl", s:"3×8–10", rpe:"8", t:"2010", r:"75s"},
       ], block:"Power clean from Day 6 folds in here on heavy weeks if you want it — sub for first row set."},
       { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Two rest days in this split (e.g. Wed + Sun).<br>Sleep, mobility, sunlight."},
       { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Full rest. Let the posterior chain recover."},
     ]},
     "4": { title:"4-Day Minimal", days:[
       { name:"Lower (Power + Strength)", focus:"Squat, hinge, jump — all in one", tag:"Lower", ex:[
-        {n:"Back Squat", note:"RPE 8", s:"4×4–5", t:"30X1", r:"3 min"},
-        {n:"Trap Bar Deadlift", s:"3×4–5", t:"X0X0", r:"3 min"},
-        {n:"Box Jump", note:"Reset each rep", s:"4×4", t:"Explosive", r:"2 min"},
-        {n:"Bulgarian Split Squat", s:"3×8 ea", t:"3010", r:"90s"},
-        {n:"Seated Leg Curl", s:"3×10–12", t:"3011", r:"75s"},
-        {n:"Standing Calf Raise", s:"3×15", t:"2020", r:"60s"},
+        {n:"Back Squat", note:"RPE 8 ceiling", s:"4×4–5", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Trap Bar Deadlift", s:"3×4–5", rpe:"8", t:"X0X0", r:"3 min"},
+        {n:"Box Jump", note:"Reset each rep", s:"4×4", rpe:"—", t:"Explosive", r:"2 min"},
+        {n:"Bulgarian Split Squat", s:"3×8 ea", rpe:"8", t:"3010", r:"90s"},
+        {n:"Seated Leg Curl", s:"3×10–12", rpe:"9", t:"3011", r:"75s"},
+        {n:"Standing Calf Raise", s:"3×15", rpe:"9", t:"2020", r:"60s"},
       ], block:"Everything lower in one hit — strength, power, hypertrophy, weak-point all covered."},
       { name:"Upper (Push Focus)", focus:"Press strength + chest + delts", tag:"Push", ex:[
-        {n:"Incline Barbell Press", s:"4×4–6", t:"30X1", r:"3 min"},
-        {n:"Weighted Pull-Up", note:"Straps · pull volume here too", s:"3×5–6", t:"30X1", r:"2.5 min"},
-        {n:"Flat DB Press", s:"3×8–10", t:"3011", r:"90s"},
-        {n:"Cable Fly (low-to-high)", s:"3×12–15", t:"2011", r:"60s"},
-        {n:"Lateral Raise", s:"3×15", t:"2010", r:"60s"},
-        {n:"Triceps Pushdown", s:"3×10–12", t:"2010", r:"60s"},
+        {n:"Incline Barbell Press", s:"4×4–6", rpe:"8", t:"30X1", r:"3 min"},
+        {n:"Weighted Pull-Up", note:"Straps · pull volume here too", s:"3×5–6", rpe:"8", t:"30X1", r:"2.5 min"},
+        {n:"Flat DB Press", s:"3×8–10", rpe:"8", t:"3011", r:"90s"},
+        {n:"Cable Fly (low-to-high)", s:"3×12–15", rpe:"8", t:"2011", r:"60s"},
+        {n:"Lateral Raise", s:"3×15", rpe:"9", t:"2010", r:"60s"},
+        {n:"Triceps Pushdown", s:"3×10–12", rpe:"9", t:"2010", r:"60s"},
       ], block:"Push-led but pull-ups slot in to keep weekly pull volume up across only 4 days."},
       { name:"Conditioning + Carries", focus:"Athletic engine · optional", tag:"Cond", circuit:{
         rounds:"3–4 rounds · 90s rest", items:[
@@ -553,13 +555,13 @@ const DEFAULTS = {
         ], finish:"8 min Zone 2"},
         block:"On a tight week this is the droppable day — but it's what keeps you combat-ready."},
       { name:"Upper (Pull + Back)", focus:"Back thickness · rear delts · arms", tag:"Pull", ex:[
-        {n:"Pendlay Row", note:"Explosive", s:"4×5–6", t:"X0X1", r:"2.5 min"},
-        {n:"Chest-Supported Row", note:"Elbows flared", s:"3×10–12", t:"2011", r:"90s"},
-        {n:"Seated DB Shoulder Press", s:"3×8–10", t:"2010", r:"90s"},
-        {n:"Rear Delt Cable Fly", s:"4×15", t:"2011", r:"60s"},
-        {n:"Face Pull", s:"3×15", t:"2011", r:"60s"},
-        {n:"Barbell Curl", s:"3×10", t:"2010", r:"75s"},
-        {n:"Hammer Curl", s:"2×12", t:"2010", r:"60s"},
+        {n:"Pendlay Row", note:"Explosive", s:"4×5–6", rpe:"8", t:"X0X1", r:"2.5 min"},
+        {n:"Chest-Supported Row", note:"Elbows flared", s:"3×10–12", rpe:"8", t:"2011", r:"90s"},
+        {n:"Seated DB Shoulder Press", s:"3×8–10", rpe:"8", t:"2010", r:"90s"},
+        {n:"Rear Delt Cable Fly", s:"4×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Face Pull", s:"3×15", rpe:"9", t:"2011", r:"60s"},
+        {n:"Barbell Curl", s:"3×10", rpe:"8", t:"2010", r:"75s"},
+        {n:"Hammer Curl", s:"2×12", rpe:"9", t:"2010", r:"60s"},
       ], block:"Concentrated back-thickness + rear-delt work — your top visual weak point fixed in one session."},
       { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"3 rest days across the week.<br>Space sessions: e.g. Mon/Tue/Thu/Fri.<br>Sleep & mobility on the off days."},
       { name:"Rest", focus:"Recovery", tag:"Rest", rest:true, restText:"Full rest."},
@@ -708,7 +710,7 @@ function renderDays(){
       if(d.block) bodyHtml+=`<div class="block-note">${d.block}</div>`;
     } else {
       let rows=d.ex.map((e,ei)=>exRow(e,di,ei)).join('');
-      bodyHtml=`<div class="exhead"><span>Exercise</span><span>Sets×Reps</span><span>Tempo</span><span>Rest</span><span></span></div>${rows}`;
+      bodyHtml=`<div class="exhead"><span>Exercise</span><span>Sets×Reps</span><span>RPE</span><span>Tempo</span><span>Rest</span><span></span></div>${rows}`;
       if(editMode){
         bodyHtml+=`<div class="add-row"><button data-add="${di}">${ICON.plus} Add exercise</button></div>`;
       }
@@ -737,14 +739,18 @@ function exRow(e,di,ei){
     return `<div class="ex editing">
       <input class="name-in" data-f="n" data-di="${di}" data-ei="${ei}" value="${esc(e.n)}" placeholder="Exercise">
       <input data-f="s" data-di="${di}" data-ei="${ei}" value="${esc(e.s)}" placeholder="4×5">
+      <input data-f="rpe" data-di="${di}" data-ei="${ei}" value="${esc(e.rpe||'8')}" placeholder="8">
       <input data-f="t" data-di="${di}" data-ei="${ei}" value="${esc(e.t)}" placeholder="30X1">
       <input data-f="r" data-di="${di}" data-ei="${ei}" value="${esc(e.r)}" placeholder="3 min">
       <div class="del"><button data-del-di="${di}" data-del-ei="${ei}">${ICON.trash}</button></div>
     </div>`;
   }
+  const rpeVal = e.rpe||'8';
+  const isDash = rpeVal==='—'||rpeVal==='-'||rpeVal==='';
   return `<div class="ex">
     <div class="name">${esc(e.n)}${e.note?`<span class="note">${esc(e.note)}</span>`:''}</div>
     <div class="cell sets"><span class="v">${esc(e.s)}</span></div>
+    <div class="cell rpe"><span class="v${isDash?' dash':''}">${isDash?'—':'RPE '+esc(rpeVal)}</span></div>
     <div class="cell tempo"><span class="v">${esc(e.t)}</span></div>
     <div class="cell rest"><span class="v" data-rest="${esc(e.r)}">${esc(e.r)}</span></div>
     <div class="del"></div>
