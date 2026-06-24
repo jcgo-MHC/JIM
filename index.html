@@ -697,7 +697,7 @@ function renderDays(){
   wrap.innerHTML='';
   v.days.forEach((d,di)=>{
     const card=document.createElement('div');
-    card.className='day'+(d.rest?' rest':'')+(di===0?' open':'');
+    card.className='day'+(d.rest?' rest':'');
     let bodyHtml='';
     if(d.rest){
       bodyHtml=`<div class="rest-body">${d.restText||'Full rest.'}</div>`;
