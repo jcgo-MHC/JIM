@@ -80,10 +80,10 @@ main{max-width:760px;margin:0 auto;padding:6px 14px 40px}
 .day.open .day-body{display:block}
 
 /* Exercise table */
-.exhead{display:grid;grid-template-columns:1fr 56px 44px 60px 50px 34px;gap:6px;padding:9px 14px 7px;align-items:end}
+.exhead{display:grid;grid-template-columns:1.4fr 56px 44px 60px 50px 34px;gap:4px;padding:9px 14px 7px;align-items:end}
 .exhead span{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .exhead span:not(:first-child){text-align:center}
-.ex{display:grid;grid-template-columns:1fr 56px 44px 60px 50px 34px;gap:6px;padding:11px 14px;align-items:center;border-top:1px solid var(--line-2)}
+.ex{display:grid;grid-template-columns:1.4fr 56px 44px 60px 50px 34px;gap:4px;padding:11px 14px;align-items:center;border-top:1px solid var(--line-2)}
 .ex .name{font-size:13.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
 .ex .name .note{display:block;font-size:10.5px;color:var(--muted);font-weight:500;margin-top:2px}
 .ex .cell{text-align:center}
@@ -97,8 +97,17 @@ main{max-width:760px;margin:0 auto;padding:6px 14px 40px}
 .ex .del button{width:26px;height:26px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .ex .del button:active{background:var(--accent-soft);color:var(--accent)}
 .ex.editing{background:var(--raise)}
-.ex input{width:100%;border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 7px;font-size:12.5px;font-family:inherit;color:var(--ink);text-align:center}
-.ex input.name-in{text-align:left;font-weight:600}
+.ex input.uinput{width:100%;border:none;background:transparent;border-radius:0;padding:2px 3px;font-size:12px;font-family:inherit;color:var(--ink);text-align:center;border-bottom:1px dashed transparent;transition:.15s;min-width:0}
+.ex input.uinput:focus{border-bottom-color:var(--accent);outline:none;background:var(--accent-soft)}
+.ex input.uinput::placeholder{color:#c8c8c8;font-weight:500}
+.ex input.uinput.name-in{text-align:left;font-weight:600;font-size:13px;width:100%;min-width:0}
+.ex input.uinput.name-in::placeholder{color:#c0c0c0;font-weight:600}
+.ex input.uinput.rpe-in{font-weight:800;color:var(--accent)}
+.ex input.uinput.rpe-in::placeholder{color:#f0b0a0;font-weight:700}
+.ex input.uinput:not(:placeholder-shown){color:var(--ink);font-weight:700}
+.ex .name.user-field{min-width:0;overflow:hidden}
+.ex.editing input{width:100%;border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 7px;font-size:12.5px;font-family:inherit;color:var(--ink);text-align:center}
+.ex.editing input.name-in{text-align:left;font-weight:600}
 .add-row{padding:11px 14px;border-top:1px solid var(--line-2)}
 .add-row button{width:100%;border:1px dashed var(--line);background:var(--bg);border-radius:10px;padding:10px;font-size:12.5px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .add-row button:active{border-color:var(--accent);color:var(--accent)}
@@ -213,6 +222,32 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 
 .reset-link{display:block;width:100%;text-align:center;background:none;border:0;color:var(--muted);font-size:12px;font-weight:600;padding:14px;cursor:pointer;text-decoration:underline}
 
+/* Add week button */
+.add-week-btn{flex:0 0 auto;border:1.5px dashed var(--muted);background:transparent;border-radius:9px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:.15s;margin-left:2px}
+.add-week-btn:active,.add-week-btn:hover{border-color:var(--accent);color:var(--accent)}
+#customTabs{display:contents}
+.custom-tab-wrap{position:relative;display:inline-flex;flex:0 0 auto}
+.custom-tab-wrap button.seg-btn{flex:1;border:0;background:transparent;padding:9px 10px 9px 8px;border-radius:9px;font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer;transition:.18s;white-space:nowrap}
+.custom-tab-wrap button.seg-btn .n{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+.custom-tab-wrap button.seg-btn.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+.custom-tab-wrap button.seg-btn.on .n{color:var(--accent)}
+.custom-tab-del{position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:#fff;border:0;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2}
+.custom-tab-wrap:hover .custom-tab-del,.custom-tab-wrap.on .custom-tab-del{display:flex}
+.day-del-btn{width:28px;height:28px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;transition:.15s}
+.day-del-btn:active,.day-del-btn:hover{background:var(--accent-soft);color:var(--accent)}
+.day-del-btn svg{width:15px;height:15px}
+.add-day-row{padding:14px}
+.add-day-row button{width:100%;border:1.5px dashed var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
+.add-day-row button:active,.add-day-row button:hover{border-color:var(--accent);color:var(--accent)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:80;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s}
+.modal{background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:540px;box-shadow:var(--shadow-lg)}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:16px;letter-spacing:-.02em}
+.modal input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;font-size:15px;font-family:inherit;margin-bottom:14px}
+.modal input:focus{border-color:var(--accent);outline:none}
+.modal .mbtn{width:100%;border:0;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.modal .mbtn.pri{background:var(--ink);color:#fff;margin-bottom:8px}
+.modal .mbtn.sec{background:var(--line-2);color:var(--ink-2)}
+
 /* Top nav (shown on tablet/desktop) */
 .topnav{display:none}
 .topnav button{border:0;background:transparent;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:8px 14px;border-radius:10px;transition:.15s;display:flex;align-items:center;gap:7px}
@@ -282,7 +317,14 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 .timer .quick button{flex:1;border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(255,255,255,.8);border-radius:10px;padding:8px 4px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .timer .quick button:active{background:rgba(255,255,255,.12)}
 
-/* Timer launcher button in header area */
+@media (max-width:500px){
+  .exhead{grid-template-columns:1.6fr 50px 38px 52px 44px 0px;gap:3px;padding:9px 10px 7px}
+  .ex{grid-template-columns:1.6fr 50px 38px 52px 44px 0px;gap:3px;padding:10px 10px}
+  .ex .del{display:none}
+  .ex input.uinput{font-size:11px;padding:2px 2px}
+  .ex input.uinput.name-in{font-size:12px}
+  .exhead span{font-size:8.5px;letter-spacing:.04em}
+}
 .timer-fab{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;margin-left:8px}
 .timer-fab svg{width:14px;height:14px}
 .timer-fab:active{border-color:var(--accent);color:var(--accent)}
@@ -317,6 +359,10 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
       <button data-v="6" class="on">6-Day <span class="n">FULL SYSTEM</span></button>
       <button data-v="5">5-Day <span class="n">COMPRESSED</span></button>
       <button data-v="4">4-Day <span class="n">MINIMAL</span></button>
+      <div id="customTabs"></div>
+      <button id="addWeekBtn" class="add-week-btn" title="New week">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
     </div>
     <div class="sec-t">
       <h2 id="variantTitle">6-Day Split</h2>
@@ -633,6 +679,7 @@ const DEFAULTS = {
     {h:"Power Output Quality", p:"Rate explosiveness 1–10 after every jump/power session. Below 7 for two sessions running = drop conditioning volume, your nervous system is taxed."},
     {h:"Bodyweight + Visual", p:"Don't drop below 61kg. Target stable or +0.5–1kg over 12 weeks. Photo every 4 weeks, same conditions. Goal: legs visibly catch up to upper body by week 12."},
   ],
+  customWeeks: [],
   phases:[
     {wk:[1,2,3,4], label:"Accumulation", cls:"acc"},
     {wk:[5,6,7,8], label:"Intensification", cls:"acc"},
@@ -696,10 +743,10 @@ function setWeek(w,scroll){
 const DAYNAMES=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 function renderDays(){
   const wrap=document.getElementById('daysWrap');
-  const v=DATA.variants[curVariant];
-  document.getElementById('variantTitle').textContent=v.title;
+  const v=getVariantObj();
+  document.getElementById('variantTitle').textContent=v.title||'Custom';
   wrap.innerHTML='';
-  v.days.forEach((d,di)=>{
+  getVariantDays().forEach((d,di)=>{
     const card=document.createElement('div');
     card.className='day'+(d.rest?' rest':'');
     let bodyHtml='';
@@ -749,37 +796,80 @@ function renderDays(){
           <div class="daynum">${d.rest?'·':DAYNAMES[di]}</div>
           <div class="dt"><h3>${esc(d.name)}</h3><div class="focus">${esc(d.focus)}</div></div>
         </div>
-        <div class="r"><span class="pill">${d.tag}</span>${ICON.chev}</div>
+        <div class="r">
+          <span class="pill">${d.tag}</span>
+          <button class="day-del-btn" data-day-del="${di}" title="Delete day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+          ${ICON.chev}
+        </div>
       </div>
       <div class="day-body">${bodyHtml}</div>`;
     card.querySelector('.day-head').onclick=(e)=>{
-      if(e.target.closest('input'))return;
+      if(e.target.closest('input')||e.target.closest('.day-del-btn'))return;
       card.classList.toggle('open');
     };
     wrap.appendChild(card);
   });
+  // Add day button at bottom
+  const addDayRow=document.createElement('div');
+  addDayRow.className='add-day-row';
+  addDayRow.innerHTML=`<button id="addDayBtn">${ICON.plus} Add day</button>`;
+  wrap.appendChild(addDayRow);
+  // Bind day delete
+  wrap.querySelectorAll('[data-day-del]').forEach(btn=>{
+    btn.onclick=(e)=>{
+      e.stopPropagation();
+      const di=parseInt(btn.dataset.dayDel);
+      if(!confirm('Delete this day?'))return;
+      getVariantDays().splice(di,1);
+      save();renderDays();
+    };
+  });
+  // Bind add day
+  document.getElementById('addDayBtn').onclick=()=>{
+    showModal('Name this day','e.g. Upper Push','Add',name=>{
+      if(!name.trim())return;
+      getVariantDays().push({name,focus:'Custom day',tag:'Custom',ex:[
+        {n:'Exercise',s:'3×10',rpe:'8',t:'2010',r:'90s'}
+      ]});
+      save();renderDays();
+    });
+  };
   bindEditing();
   bindRestTaps();
 }
 function exRow(e,di,ei){
+  const rpeVal = e.rpe||'8';
+  const isDash = rpeVal==='—'||rpeVal==='-'||rpeVal==='';
+  // user-entered values stored separately
+  const uKey=`user_${curVariant}_${di}_${ei}`;
+  let u={};try{u=JSON.parse(Store.get(uKey)||'{}')}catch(x){}
   if(editMode){
     return `<div class="ex editing">
       <input class="name-in" data-f="n" data-di="${di}" data-ei="${ei}" value="${esc(e.n)}" placeholder="Exercise">
       <input data-f="s" data-di="${di}" data-ei="${ei}" value="${esc(e.s)}" placeholder="4×5">
-      <input data-f="rpe" data-di="${di}" data-ei="${ei}" value="${esc(e.rpe||'8')}" placeholder="8">
+      <input data-f="rpe" data-di="${di}" data-ei="${ei}" value="${esc(rpeVal)}" placeholder="8">
       <input data-f="t" data-di="${di}" data-ei="${ei}" value="${esc(e.t)}" placeholder="30X1">
       <input data-f="r" data-di="${di}" data-ei="${ei}" value="${esc(e.r)}" placeholder="3 min">
       <div class="del"><button data-del-di="${di}" data-del-ei="${ei}">${ICON.trash}</button></div>
     </div>`;
   }
-  const rpeVal = e.rpe||'8';
-  const isDash = rpeVal==='—'||rpeVal==='-'||rpeVal==='';
   return `<div class="ex">
-    <div class="name">${esc(e.n)}${e.note?`<span class="note">${esc(e.note)}</span>`:''}</div>
-    <div class="cell sets"><span class="v">${esc(e.s)}</span></div>
-    <div class="cell rpe"><span class="v${isDash?' dash':''}">${isDash?'—':'RPE '+esc(rpeVal)}</span></div>
-    <div class="cell tempo"><span class="v">${esc(e.t)}</span></div>
-    <div class="cell rest"><span class="v" data-rest="${esc(e.r)}">${esc(e.r)}</span></div>
+    <div class="name user-field" style="padding:0">
+      <input class="uinput name-in" data-uk="${uKey}" data-uf="n" value="${esc(u.n||'')}" placeholder="${esc(e.n)}" style="font-size:13.5px;font-weight:600">
+      ${e.note?`<span class="note">${esc(e.note)}</span>`:''}
+    </div>
+    <div class="cell sets">
+      <input class="uinput" data-uk="${uKey}" data-uf="s" value="${esc(u.s||'')}" placeholder="${esc(e.s)}">
+    </div>
+    <div class="cell rpe">
+      <input class="uinput rpe-in" data-uk="${uKey}" data-uf="rpe" value="${esc(u.rpe||'')}" placeholder="${isDash?'—':rpeVal}">
+    </div>
+    <div class="cell tempo">
+      <input class="uinput" data-uk="${uKey}" data-uf="t" value="${esc(u.t||'')}" placeholder="${esc(e.t)}">
+    </div>
+    <div class="cell rest">
+      <input class="uinput" data-uk="${uKey}" data-uf="r" value="${esc(u.r||'')}" placeholder="${esc(e.r)}" data-rest="${esc(e.r)}">
+    </div>
     <div class="del"></div>
   </div>`;
 }
@@ -800,20 +890,90 @@ function bindEditing(){
   document.querySelectorAll('#daysWrap .cond-int').forEach(inp=>{
     inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].intensity=inp.value;save();};
   });
+  document.querySelectorAll('#daysWrap .uinput').forEach(inp=>{
+    inp.oninput=()=>{
+      const k=inp.dataset.uk, f=inp.dataset.uf;
+      let u={};try{u=JSON.parse(Store.get(k)||'{}')}catch(x){}
+      if(inp.value.trim()){u[f]=inp.value;}else{delete u[f];}
+      Store.set(k,JSON.stringify(u));
+    };
+  });
   document.querySelectorAll('#daysWrap [data-del-di]').forEach(b=>{
     b.onclick=()=>{
       const di=b.dataset.delDi,ei=+b.dataset.delEi;
-      DATA.variants[curVariant].days[di].ex.splice(ei,1);save();renderDays();keepOpen(di);
+      getVariantDays()[di].ex.splice(ei,1);save();renderDays();keepOpen(di);
     };
   });
   document.querySelectorAll('#daysWrap [data-add]').forEach(b=>{
     b.onclick=()=>{
       const di=b.dataset.add;
-      DATA.variants[curVariant].days[di].ex.push({n:"New exercise",s:"3×10",t:"2010",r:"90s"});
+      getVariantDays()[di].ex.push({n:"New exercise",s:"3×10",rpe:"8",t:"2010",r:"90s"});
       save();renderDays();keepOpen(di);
     };
   });
 }
+function getVariantDays(){
+  if(['4','5','6'].includes(curVariant)) return DATA.variants[curVariant].days;
+  const cw=DATA.customWeeks.find(w=>w.id===curVariant);
+  return cw?cw.days:[];
+}
+function getVariantObj(){
+  if(['4','5','6'].includes(curVariant)) return DATA.variants[curVariant];
+  return DATA.customWeeks.find(w=>w.id===curVariant)||{title:'Custom',days:[]};
+}
+
+function showModal(title,placeholder,confirmLabel,onConfirm){
+  const ov=document.createElement('div');
+  ov.className='modal-overlay';
+  ov.innerHTML=`<div class="modal">
+    <h3>${esc(title)}</h3>
+    <input id="modalInput" placeholder="${esc(placeholder)}" autocomplete="off">
+    <button class="mbtn pri" id="modalOk">${esc(confirmLabel)}</button>
+    <button class="mbtn sec" id="modalCancel">Cancel</button>
+  </div>`;
+  document.body.appendChild(ov);
+  const inp=ov.querySelector('#modalInput');
+  inp.focus();
+  ov.querySelector('#modalOk').onclick=()=>{onConfirm(inp.value);document.body.removeChild(ov);};
+  ov.querySelector('#modalCancel').onclick=()=>document.body.removeChild(ov);
+  ov.onclick=(e)=>{if(e.target===ov)document.body.removeChild(ov);};
+  inp.onkeydown=(e)=>{if(e.key==='Enter'){onConfirm(inp.value);document.body.removeChild(ov);}};
+}
+
+function renderCustomTabs(){
+  const ct=document.getElementById('customTabs');
+  if(!ct)return;
+  ct.innerHTML='';
+  (DATA.customWeeks||[]).forEach(cw=>{
+    const wrap=document.createElement('div');
+    wrap.className='custom-tab-wrap'+(curVariant===cw.id?' on':'');
+    wrap.innerHTML=`<button class="seg-btn${curVariant===cw.id?' on':''}" data-cv="${esc(cw.id)}">${esc(cw.title)}<span class="n">CUSTOM</span></button><button class="custom-tab-del" data-cdel="${esc(cw.id)}" title="Delete">✕</button>`;
+    wrap.querySelector('.seg-btn').onclick=()=>{
+      curVariant=cw.id;
+      document.querySelectorAll('#variantSeg button[data-v], .seg-btn').forEach(b=>b.classList.remove('on'));
+      wrap.querySelector('.seg-btn').classList.add('on');
+      wrap.classList.add('on');
+      renderCustomTabs();renderDays();
+      document.getElementById('variantTitle').textContent=cw.title;
+    };
+    wrap.querySelector('.custom-tab-del').onclick=(e)=>{
+      e.stopPropagation();
+      if(!confirm(`Delete "${cw.title}"?`))return;
+      DATA.customWeeks=DATA.customWeeks.filter(w=>w.id!==cw.id);
+      if(curVariant===cw.id){curVariant='6';}
+      save();renderVariantSeg();renderDays();
+    };
+    ct.appendChild(wrap);
+  });
+}
+
+function renderVariantSeg(){
+  document.querySelectorAll('#variantSeg button[data-v]').forEach(b=>{
+    b.classList.toggle('on',b.dataset.v===curVariant);
+  });
+  renderCustomTabs();
+}
+
 function keepOpen(di){
   const cards=document.querySelectorAll('#daysWrap .day');
   if(cards[di])cards[di].classList.add('open');
@@ -940,13 +1100,28 @@ function switchView(v){
 document.querySelectorAll('#nav button, #topnav button').forEach(b=>{
   b.onclick=()=>switchView(b.dataset.view);
 });
-document.getElementById('variantSeg').querySelectorAll('button').forEach(b=>{
+document.getElementById('variantSeg').querySelectorAll('button[data-v]').forEach(b=>{
   b.onclick=()=>{
     curVariant=b.dataset.v;
-    document.querySelectorAll('#variantSeg button').forEach(x=>x.classList.toggle('on',x===b));
-    renderDays();
+    document.querySelectorAll('#variantSeg button[data-v]').forEach(x=>x.classList.toggle('on',x===b));
+    renderCustomTabs();renderDays();
   };
 });
+document.getElementById('addWeekBtn').onclick=()=>{
+  showModal('Name your custom week','e.g. Deload / Holiday / Strength Peak','Create',name=>{
+    if(!name.trim())return;
+    if(!DATA.customWeeks)DATA.customWeeks=[];
+    const id='cw_'+Date.now();
+    DATA.customWeeks.push({id,title:name,days:[
+      {name:'Day 1',focus:'Your custom focus',tag:'Custom',ex:[
+        {n:'Exercise',s:'3×10',rpe:'8',t:'2010',r:'90s'}
+      ]}
+    ]});
+    curVariant=id;
+    save();renderVariantSeg();renderDays();
+    toast(`"${name}" created`);
+  });
+};
 document.getElementById('editToggle').onclick=function(){
   editMode=!editMode;
   this.classList.toggle('on',editMode);
@@ -1043,7 +1218,7 @@ document.querySelectorAll('#timer .quick button').forEach(b=>{
 
 /* ---------- init ---------- */
 function renderAll(){
-  renderPhase();renderDays();renderNutrition();renderRecovery();renderTrack();
+  renderPhase();renderCustomTabs();renderDays();renderNutrition();renderRecovery();renderTrack();
 }
 renderAll();
 
