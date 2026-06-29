@@ -110,6 +110,7 @@ main{max-width:760px;margin:0 auto;padding:6px 14px 40px}
 .ex.editing input.name-in{text-align:left;font-weight:600}
 .add-row{padding:11px 14px;border-top:1px solid var(--line-2)}
 .add-row button{width:100%;border:1px dashed var(--line);background:var(--bg);border-radius:10px;padding:10px;font-size:12.5px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-row button svg{width:14px;height:14px;flex:0 0 auto}
 .add-row button:active{border-color:var(--accent);color:var(--accent)}
 
 .block-note{margin:10px 14px 14px;padding:11px 13px;background:var(--accent-soft);border-radius:12px;font-size:12px;line-height:1.5;color:#7a2318}
@@ -238,6 +239,7 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 .day-del-btn svg{width:15px;height:15px}
 .add-day-row{padding:14px}
 .add-day-row button{width:100%;border:1.5px dashed var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
+.add-day-row button svg{width:15px;height:15px;flex:0 0 auto}
 .add-day-row button:active,.add-day-row button:hover{border-color:var(--accent);color:var(--accent)}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:80;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s}
 .modal{background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:540px;box-shadow:var(--shadow-lg)}
@@ -247,6 +249,48 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
 .modal .mbtn{width:100%;border:0;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .modal .mbtn.pri{background:var(--ink);color:#fff;margin-bottom:8px}
 .modal .mbtn.sec{background:var(--line-2);color:var(--ink-2)}
+
+/* ===== Universal editable text ===== */
+.editable-text{cursor:text;border-radius:5px;transition:background .12s;outline:none}
+body.arrange-mode .editable-text{cursor:default}
+.editable-text:hover{background:rgba(255,59,29,.06)}
+.editable-text:focus{background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset;cursor:text}
+
+/* ===== Drag handles & dragging ===== */
+.drag-handle{display:inline-flex;align-items:center;justify-content:center;cursor:grab;color:var(--muted);flex:0 0 auto;touch-action:none}
+.drag-handle:active{cursor:grabbing}
+.drag-handle svg{width:20px;height:20px}
+.day-handle{width:34px;height:34px;background:var(--line-2);border-radius:10px}
+.ex-handle,.ci-handle{width:24px;height:24px;margin-right:4px}
+.dragging{opacity:.92;box-shadow:var(--shadow-lg)!important;position:relative}
+.day.dragging{background:#fff;border-color:var(--accent)}
+body.arrange-mode .day-body{display:none}
+body.arrange-mode .day{margin-bottom:8px}
+body.arrange-mode .ex-list .ex{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--raise);border-radius:10px;margin:5px 0;border-top:0}
+body.arrange-mode .ex-list .ex .name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.arrange-mode .ex-list .ex .cell{font-size:11px}
+.arrange-row{cursor:grab}
+
+/* ===== Row delete buttons ===== */
+.row-del{flex:0 0 auto;width:26px;height:26px;border-radius:7px;border:0;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:6px;transition:.12s}
+.row-del:hover,.row-del:active{background:var(--accent-soft);color:var(--accent)}
+.row-del svg{width:14px;height:14px}
+.ex-del-btn{width:24px;height:24px;border-radius:6px;border:0;background:transparent;color:#ccc;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ex-del-btn:hover,.ex-del-btn:active{background:var(--accent-soft);color:var(--accent)}
+.ex-del-btn svg{width:13px;height:13px}
+.ci-del{width:22px;height:22px;border-radius:6px;border:0;background:transparent;color:#ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.ci-del:hover{background:var(--accent-soft);color:var(--accent)}
+.ci-del svg{width:13px;height:13px}
+.li-del{border:0;background:transparent;color:#ccc;cursor:pointer;font-size:15px;line-height:1;padding:0 0 0 8px;float:right}
+.li-del:hover{color:var(--accent)}
+.add-li{border:0;background:transparent;color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;padding:6px 0 0;display:flex;align-items:center;gap:4px}
+.add-li:hover{color:var(--accent)}
+.add-li svg{width:13px;height:13px}
+.info ul li{position:relative}
+.meal .mh{display:flex;align-items:center;gap:6px}
+.meal .mh .when{flex:1}
+.supp .drag-handle{margin-right:4px}
+.ci .drag-handle{margin-right:2px}
 
 /* Top nav (shown on tablet/desktop) */
 .topnav{display:none}
@@ -366,14 +410,14 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(255,255,25
     </div>
     <div class="sec-t">
       <h2 id="variantTitle">6-Day Split</h2>
-      <div style="display:flex;align-items:center">
+      <div style="display:flex;align-items:center;gap:6px">
         <button class="timer-fab" id="timerFab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M12 1h0M9 1h6"/></svg>
           Timer
         </button>
-        <button class="edit-btn" id="editToggle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-          Edit
+        <button class="edit-btn" id="arrangeToggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          Arrange
         </button>
       </div>
     </div>
@@ -690,7 +734,8 @@ const DEFAULTS = {
 
 /* ---------- STATE ---------- */
 let DATA = load();
-let editMode = false;
+let editMode = true;
+let arrangeMode = false;
 let curVariant = "6";
 let curView = "train";
 
@@ -702,6 +747,100 @@ function load(){
 function save(){ Store.set('forge_data', JSON.stringify(DATA)); }
 function resetData(){ Store.del('forge_data'); DATA = JSON.parse(JSON.stringify(DEFAULTS)); }
 
+/* ---------- UNIVERSAL INLINE EDIT ----------
+   Makes any element editable on tap. Saves via setter(newValue).
+   plain=true strips HTML and edits raw text. */
+function makeEditable(el, getVal, setVal, opts={}){
+  if(!el) return;
+  el.classList.add('editable-text');
+  el.setAttribute('contenteditable','true');
+  el.setAttribute('spellcheck','false');
+  el.addEventListener('focus',()=>{ el.dataset._before = el.innerText; });
+  el.addEventListener('blur',()=>{
+    const val = el.innerText.trim();
+    if(val !== (el.dataset._before||'')){
+      setVal(val);
+      save();
+      if(opts.rerender) opts.rerender();
+    }
+  });
+  el.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter' && !opts.multiline){ e.preventDefault(); el.blur(); }
+    e.stopPropagation();
+  });
+}
+
+/* ---------- UNIVERSAL DRAG & DROP ----------
+   Enables drag reordering on children of `container` matching `selector`.
+   onReorder(fromIndex, toIndex) mutates the data array. Only active in arrangeMode. */
+function enableDragReorder(container, selector, onReorder){
+  if(!arrangeMode) return;
+  let dragEl=null, placeholder=null, startY=0, items=[];
+
+  const getItems=()=>Array.from(container.querySelectorAll(':scope > '+selector));
+
+  container.querySelectorAll(':scope > '+selector).forEach((item,idx)=>{
+    const handle=item.querySelector('.drag-handle')||item;
+    handle.style.touchAction='none';
+
+    const onDown=(e)=>{
+      // ignore if tapping an input/button/editable inside
+      if(e.target.closest('input,textarea,button,[contenteditable="true"]') && !e.target.closest('.drag-handle')) return;
+      e.preventDefault();
+      dragEl=item;
+      items=getItems();
+      const rect=item.getBoundingClientRect();
+      startY=(e.touches?e.touches[0].clientY:e.clientY);
+      dragEl.classList.add('dragging');
+      dragEl._startTop=rect.top;
+      dragEl._h=rect.height;
+      document.body.style.userSelect='none';
+      document.addEventListener('pointermove',onMove,{passive:false});
+      document.addEventListener('pointerup',onUp);
+    };
+
+    const onMove=(e)=>{
+      if(!dragEl)return;
+      e.preventDefault();
+      const y=(e.touches?e.touches[0].clientY:e.clientY);
+      const dy=y-startY;
+      dragEl.style.transform=`translateY(${dy}px)`;
+      dragEl.style.zIndex='100';
+      // find which sibling we're over
+      const cur=getItems();
+      const myIdx=cur.indexOf(dragEl);
+      cur.forEach((other,oi)=>{
+        if(other===dragEl)return;
+        const r=other.getBoundingClientRect();
+        const mid=r.top+r.height/2;
+        if(oi<myIdx && y<mid && r.top<dragEl._startTop+dy){
+          container.insertBefore(dragEl,other);
+        } else if(oi>myIdx && y>mid){
+          container.insertBefore(dragEl,other.nextSibling);
+        }
+      });
+    };
+
+    const onUp=()=>{
+      document.removeEventListener('pointermove',onMove);
+      document.removeEventListener('pointerup',onUp);
+      document.body.style.userSelect='';
+      if(!dragEl)return;
+      dragEl.style.transform='';
+      dragEl.style.zIndex='';
+      dragEl.classList.remove('dragging');
+      // compute new order
+      const finalItems=getItems();
+      const newOrder=finalItems.map(it=>parseInt(it.dataset.dragIdx));
+      dragEl=null;
+      onReorder(newOrder);
+    };
+
+    handle.addEventListener('pointerdown',onDown);
+  });
+}
+
+
 /* ---------- ICONS ---------- */
 const ICON = {
   chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>',
@@ -711,6 +850,7 @@ const ICON = {
   sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>',
   snow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M4 7l16 10M20 7 4 17"/></svg>',
   brain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 5 1V4a1 1 0 0 0-1-1ZM15 3a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-5 1V4a1 1 0 0 1 1-1Z"/></svg>',
+  grip:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>',
 };
 
 /* ---------- RENDER: phase strip ---------- */
@@ -746,25 +886,22 @@ function renderDays(){
   const v=getVariantObj();
   document.getElementById('variantTitle').textContent=v.title||'Custom';
   wrap.innerHTML='';
-  getVariantDays().forEach((d,di)=>{
+  const days=getVariantDays();
+  days.forEach((d,di)=>{
     const card=document.createElement('div');
-    card.className='day'+(d.rest?' rest':'');
+    card.className='day'+(d.rest?' rest':'')+(arrangeMode?' arrange':'');
+    card.dataset.dragIdx=di;
     let bodyHtml='';
     if(d.rest){
-      bodyHtml=`<div class="rest-body">${d.restText||'Full rest.'}</div>`;
+      bodyHtml=`<div class="rest-body" data-edit-rest="${di}">${d.restText||'Full rest.'}</div>`;
     } else if(d.circuit){
       let items=d.circuit.items.map((it,ii)=>{
-        if(editMode){
-          return `<div class="ci">
-            <input class="name-in cond-nm" data-di="${di}" data-ii="${ii}" value="${esc(it.nm)}" style="border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:13px;font-weight:600;flex:1;margin-right:6px">
-            <input class="cond-int" data-di="${di}" data-ii="${ii}" value="${esc(it.intensity||'')}" placeholder="intensity cue" style="border:1px solid var(--line);border-radius:7px;padding:6px 7px;font-size:11px;flex:1.2;margin-right:6px;color:var(--muted)">
-            <input class="cond-tg" data-di="${di}" data-ii="${ii}" value="${esc(it.tg)}" style="width:56px;border:1px solid var(--line);border-radius:7px;padding:6px;font-size:12px;font-weight:700;text-align:center;flex:0 0 auto">
-          </div>`;
-        }
-        return `<div class="ci">
-          <span class="nm">${esc(it.nm)}</span>
-          <span class="ci-int-inline">${esc(it.intensity||'')}</span>
-          <span class="tg">${esc(it.tg)}</span>
+        return `<div class="ci" data-drag-idx="${ii}">
+          ${arrangeMode?'<span class="drag-handle ci-handle">'+ICON.grip+'</span>':''}
+          <span class="nm" data-edit-ci="${di}_${ii}_nm">${esc(it.nm)}</span>
+          <span class="ci-int-inline" data-edit-ci="${di}_${ii}_intensity">${esc(it.intensity||'')}</span>
+          <span class="tg" data-edit-ci="${di}_${ii}_tg">${esc(it.tg)}</span>
+          ${(editMode && !arrangeMode)?`<button class="ci-del" data-cidel="${di}_${ii}">${ICON.trash}</button>`:''}
         </div>`;
       }).join('');
       bodyHtml=`<div class="circuit">
@@ -773,47 +910,49 @@ function renderDays(){
           <span>Intensity</span>
           <span>Target</span>
         </div>
-        <div class="pill" style="margin:4px 0 6px;display:inline-block">${esc(d.circuit.rounds)}</div>
-        ${items}
+        <div class="pill" data-edit-rounds="${di}" style="margin:4px 0 6px;display:inline-block">${esc(d.circuit.rounds)}</div>
+        <div class="ci-list" data-ci-list="${di}">${items}</div>
         <div class="ci">
           <span class="nm" style="color:var(--muted)">Finisher</span>
-          <span class="ci-int-inline">${esc(d.circuit.finish)}</span>
+          <span class="ci-int-inline" data-edit-finish="${di}">${esc(d.circuit.finish)}</span>
           <span class="tg"></span>
         </div>
+        ${(editMode && !arrangeMode)?`<div class="add-row"><button data-add-ci="${di}">${ICON.plus} Add conditioning item</button></div>`:''}
       </div>`;
-      if(d.block) bodyHtml+=`<div class="block-note">${d.block}</div>`;
+      if(d.block) bodyHtml+=`<div class="block-note" data-edit-block="${di}">${d.block}</div>`;
     } else {
       let rows=d.ex.map((e,ei)=>exRow(e,di,ei)).join('');
-      bodyHtml=`<div class="exhead"><span>Exercise</span><span>Sets×Reps</span><span>RPE</span><span>Tempo</span><span>Rest</span><span></span></div>${rows}`;
-      if(editMode){
-        bodyHtml+=`<div class="add-row"><button data-add="${di}">${ICON.plus} Add exercise</button></div>`;
-      }
-      if(d.block) bodyHtml+=`<div class="block-note">${d.block}</div>`;
+      bodyHtml=`<div class="exhead"><span>Exercise</span><span>Sets×Reps</span><span>RPE</span><span>Tempo</span><span>Rest</span><span></span></div><div class="ex-list" data-ex-list="${di}">${rows}</div>`;
+      if(!arrangeMode) bodyHtml+=`<div class="add-row"><button data-add="${di}">${ICON.plus} Add exercise</button></div>`;
+      if(d.block) bodyHtml+=`<div class="block-note" data-edit-block="${di}">${d.block}</div>`;
     }
     card.innerHTML=`
       <div class="day-head">
         <div class="l">
-          <div class="daynum">${d.rest?'·':DAYNAMES[di]}</div>
-          <div class="dt"><h3>${esc(d.name)}</h3><div class="focus">${esc(d.focus)}</div></div>
+          ${arrangeMode?'<span class="drag-handle day-handle">'+ICON.grip+'</span>':`<div class="daynum">${d.rest?'·':DAYNAMES[di]}</div>`}
+          <div class="dt"><h3 data-edit-name="${di}">${esc(d.name)}</h3><div class="focus" data-edit-focus="${di}">${esc(d.focus)}</div></div>
         </div>
         <div class="r">
-          <span class="pill">${d.tag}</span>
-          <button class="day-del-btn" data-day-del="${di}" title="Delete day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>
+          <span class="pill" data-edit-tag="${di}">${esc(d.tag)}</span>
+          ${arrangeMode?'':`<button class="day-del-btn" data-day-del="${di}" title="Delete day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button>`}
           ${ICON.chev}
         </div>
       </div>
       <div class="day-body">${bodyHtml}</div>`;
     card.querySelector('.day-head').onclick=(e)=>{
-      if(e.target.closest('input')||e.target.closest('.day-del-btn'))return;
+      if(arrangeMode)return;
+      if(e.target.closest('input')||e.target.closest('.day-del-btn')||e.target.closest('[contenteditable="true"]')||e.target.closest('[data-edit-name]')||e.target.closest('[data-edit-focus]')||e.target.closest('[data-edit-tag]'))return;
       card.classList.toggle('open');
     };
     wrap.appendChild(card);
   });
   // Add day button at bottom
-  const addDayRow=document.createElement('div');
-  addDayRow.className='add-day-row';
-  addDayRow.innerHTML=`<button id="addDayBtn">${ICON.plus} Add day</button>`;
-  wrap.appendChild(addDayRow);
+  if(!arrangeMode){
+    const addDayRow=document.createElement('div');
+    addDayRow.className='add-day-row';
+    addDayRow.innerHTML=`<button id="addDayBtn">${ICON.plus} Add day</button>`;
+    wrap.appendChild(addDayRow);
+  }
   // Bind day delete
   wrap.querySelectorAll('[data-day-del]').forEach(btn=>{
     btn.onclick=(e)=>{
@@ -825,7 +964,8 @@ function renderDays(){
     };
   });
   // Bind add day
-  document.getElementById('addDayBtn').onclick=()=>{
+  const addDayBtn=document.getElementById('addDayBtn');
+  if(addDayBtn) addDayBtn.onclick=()=>{
     showModal('Name this day','e.g. Upper Push','Add',name=>{
       if(!name.trim())return;
       getVariantDays().push({name,focus:'Custom day',tag:'Custom',ex:[
@@ -836,6 +976,87 @@ function renderDays(){
   };
   bindEditing();
   bindRestTaps();
+  bindDayInlineEdits();
+  // Enable drag reorder on day cards
+  enableDragReorder(wrap,'.day',(newOrder)=>{
+    const arr=getVariantDays();
+    const reordered=newOrder.map(i=>arr[i]);
+    arr.length=0;arr.push(...reordered);
+    save();renderDays();
+  });
+  // Enable drag reorder on exercises within each day
+  days.forEach((d,di)=>{
+    if(d.ex){
+      const list=wrap.querySelector(`[data-ex-list="${di}"]`);
+      if(list) enableDragReorder(list,'.ex',(newOrder)=>{
+        const reordered=newOrder.map(i=>d.ex[i]);
+        d.ex.length=0;d.ex.push(...reordered);
+        save();renderDays();keepOpen(di);
+      });
+    }
+    if(d.circuit){
+      const list=wrap.querySelector(`[data-ci-list="${di}"]`);
+      if(list) enableDragReorder(list,'.ci',(newOrder)=>{
+        const reordered=newOrder.map(i=>d.circuit.items[i]);
+        d.circuit.items.length=0;d.circuit.items.push(...reordered);
+        save();renderDays();keepOpen(di);
+      });
+    }
+  });
+}
+
+function bindDayInlineEdits(){
+  const days=getVariantDays();
+  document.querySelectorAll('#daysWrap [data-edit-name]').forEach(el=>{
+    const di=+el.dataset.editName;
+    makeEditable(el,()=>days[di].name,v=>days[di].name=v);
+  });
+  document.querySelectorAll('#daysWrap [data-edit-focus]').forEach(el=>{
+    const di=+el.dataset.editFocus;
+    makeEditable(el,()=>days[di].focus,v=>days[di].focus=v);
+  });
+  document.querySelectorAll('#daysWrap [data-edit-tag]').forEach(el=>{
+    const di=+el.dataset.editTag;
+    makeEditable(el,()=>days[di].tag,v=>days[di].tag=v);
+  });
+  document.querySelectorAll('#daysWrap [data-edit-block]').forEach(el=>{
+    const di=+el.dataset.editBlock;
+    makeEditable(el,()=>days[di].block,v=>days[di].block=v,{multiline:true});
+  });
+  document.querySelectorAll('#daysWrap [data-edit-rest]').forEach(el=>{
+    const di=+el.dataset.editRest;
+    makeEditable(el,()=>days[di].restText,v=>days[di].restText=v,{multiline:true});
+  });
+  document.querySelectorAll('#daysWrap [data-edit-rounds]').forEach(el=>{
+    const di=+el.dataset.editRounds;
+    makeEditable(el,()=>days[di].circuit.rounds,v=>days[di].circuit.rounds=v);
+  });
+  document.querySelectorAll('#daysWrap [data-edit-finish]').forEach(el=>{
+    const di=+el.dataset.editFinish;
+    makeEditable(el,()=>days[di].circuit.finish,v=>days[di].circuit.finish=v,{multiline:true});
+  });
+  document.querySelectorAll('#daysWrap [data-edit-ci]').forEach(el=>{
+    const [di,ii,field]=el.dataset.editCi.split('_');
+    makeEditable(el,()=>days[di].circuit.items[ii][field],v=>days[di].circuit.items[ii][field]=v);
+  });
+  // conditioning item delete
+  document.querySelectorAll('#daysWrap [data-cidel]').forEach(btn=>{
+    btn.onclick=(e)=>{
+      e.stopPropagation();
+      const [di,ii]=btn.dataset.cidel.split('_');
+      days[di].circuit.items.splice(+ii,1);
+      save();renderDays();keepOpen(+di);
+    };
+  });
+  // add conditioning item
+  document.querySelectorAll('#daysWrap [data-add-ci]').forEach(btn=>{
+    btn.onclick=(e)=>{
+      e.stopPropagation();
+      const di=+btn.dataset.addCi;
+      days[di].circuit.items.push({nm:'New item',tg:'',intensity:''});
+      save();renderDays();keepOpen(di);
+    };
+  });
 }
 function exRow(e,di,ei){
   const rpeVal = e.rpe||'8';
@@ -843,20 +1064,20 @@ function exRow(e,di,ei){
   // user-entered values stored separately
   const uKey=`user_${curVariant}_${di}_${ei}`;
   let u={};try{u=JSON.parse(Store.get(uKey)||'{}')}catch(x){}
-  if(editMode){
-    return `<div class="ex editing">
-      <input class="name-in" data-f="n" data-di="${di}" data-ei="${ei}" value="${esc(e.n)}" placeholder="Exercise">
-      <input data-f="s" data-di="${di}" data-ei="${ei}" value="${esc(e.s)}" placeholder="4×5">
-      <input data-f="rpe" data-di="${di}" data-ei="${ei}" value="${esc(rpeVal)}" placeholder="8">
-      <input data-f="t" data-di="${di}" data-ei="${ei}" value="${esc(e.t)}" placeholder="30X1">
-      <input data-f="r" data-di="${di}" data-ei="${ei}" value="${esc(e.r)}" placeholder="3 min">
-      <div class="del"><button data-del-di="${di}" data-del-ei="${ei}">${ICON.trash}</button></div>
+  if(arrangeMode){
+    return `<div class="ex arrange-row" data-drag-idx="${ei}">
+      <span class="drag-handle ex-handle">${ICON.grip}</span>
+      <div class="name" style="font-weight:600;font-size:13px">${esc(e.n)}</div>
+      <div class="cell sets"><span class="v">${esc(e.s)}</span></div>
+      <div class="cell rpe"><span class="v">${isDash?'—':rpeVal}</span></div>
+      <div class="cell tempo"><span class="v">${esc(e.t)}</span></div>
+      <div class="cell rest"><span class="v">${esc(e.r)}</span></div>
     </div>`;
   }
-  return `<div class="ex">
+  return `<div class="ex" data-drag-idx="${ei}">
     <div class="name user-field" style="padding:0">
       <input class="uinput name-in" data-uk="${uKey}" data-uf="n" value="${esc(u.n||'')}" placeholder="${esc(e.n)}" style="font-size:13.5px;font-weight:600">
-      ${e.note?`<span class="note">${esc(e.note)}</span>`:''}
+      ${e.note?`<span class="note" data-edit-note="${di}_${ei}">${esc(e.note)}</span>`:''}
     </div>
     <div class="cell sets">
       <input class="uinput" data-uk="${uKey}" data-uf="s" value="${esc(u.s||'')}" placeholder="${esc(e.s)}">
@@ -870,26 +1091,12 @@ function exRow(e,di,ei){
     <div class="cell rest">
       <input class="uinput" data-uk="${uKey}" data-uf="r" value="${esc(u.r||'')}" placeholder="${esc(e.r)}" data-rest="${esc(e.r)}">
     </div>
-    <div class="del"></div>
+    <div class="del"><button data-del-di="${di}" data-del-ei="${ei}" class="ex-del-btn">${ICON.trash}</button></div>
   </div>`;
 }
 function bindEditing(){
-  document.querySelectorAll('#daysWrap input[data-f]').forEach(inp=>{
-    inp.oninput=()=>{
-      const{f,di,ei}=inp.dataset;
-      DATA.variants[curVariant].days[di].ex[ei][f]=inp.value;
-      save();
-    };
-  });
-  document.querySelectorAll('#daysWrap .cond-nm').forEach(inp=>{
-    inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].nm=inp.value;save();};
-  });
-  document.querySelectorAll('#daysWrap .cond-tg').forEach(inp=>{
-    inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].tg=inp.value;save();};
-  });
-  document.querySelectorAll('#daysWrap .cond-int').forEach(inp=>{
-    inp.oninput=()=>{DATA.variants[curVariant].days[inp.dataset.di].circuit.items[inp.dataset.ii].intensity=inp.value;save();};
-  });
+  const days=getVariantDays();
+  // exercise name: editing the input updates the BASE programme value (placeholder)
   document.querySelectorAll('#daysWrap .uinput').forEach(inp=>{
     inp.oninput=()=>{
       const k=inp.dataset.uk, f=inp.dataset.uf;
@@ -898,14 +1105,23 @@ function bindEditing(){
       Store.set(k,JSON.stringify(u));
     };
   });
+  // exercise note inline edit
+  document.querySelectorAll('#daysWrap [data-edit-note]').forEach(el=>{
+    const [di,ei]=el.dataset.editNote.split('_');
+    makeEditable(el,()=>days[di].ex[ei].note,v=>days[di].ex[ei].note=v);
+  });
+  // delete exercise
   document.querySelectorAll('#daysWrap [data-del-di]').forEach(b=>{
-    b.onclick=()=>{
+    b.onclick=(e)=>{
+      e.stopPropagation();
       const di=b.dataset.delDi,ei=+b.dataset.delEi;
       getVariantDays()[di].ex.splice(ei,1);save();renderDays();keepOpen(di);
     };
   });
+  // add exercise
   document.querySelectorAll('#daysWrap [data-add]').forEach(b=>{
-    b.onclick=()=>{
+    b.onclick=(e)=>{
+      e.stopPropagation();
       const di=b.dataset.add;
       getVariantDays()[di].ex.push({n:"New exercise",s:"3×10",rpe:"8",t:"2010",r:"90s"});
       save();renderDays();keepOpen(di);
@@ -1010,7 +1226,7 @@ function renderNutrition(){
   ['train','rest'].forEach(key=>{
     const m=DATA.nutrition.macros[key];
     g.innerHTML+=`<div class="mcard">
-      <h4>${esc(m.title)}</h4>
+      <h4 data-edit-mtitle="${key}">${esc(m.title)}</h4>
       ${mrow(key,'cal','Calories',m.cal,'kcal')}
       ${mrow(key,'p','Protein',m.p,'g',true)}
       ${mrow(key,'c','Carbs',m.c,'g')}
@@ -1020,21 +1236,75 @@ function renderNutrition(){
   g.querySelectorAll('input').forEach(inp=>{
     inp.oninput=()=>{DATA.nutrition.macros[inp.dataset.key][inp.dataset.m]=inp.value;save();};
   });
-  document.getElementById('oneRule').innerHTML=DATA.nutrition.rule;
+  g.querySelectorAll('[data-edit-mtitle]').forEach(el=>{
+    const k=el.dataset.editMtitle;
+    makeEditable(el,()=>DATA.nutrition.macros[k].title,v=>DATA.nutrition.macros[k].title=v);
+  });
+
+  const ruleEl=document.getElementById('oneRule');
+  ruleEl.innerHTML=DATA.nutrition.rule;
+  makeEditable(ruleEl,()=>DATA.nutrition.rule,v=>DATA.nutrition.rule=v,{multiline:true});
 
   const mw=document.getElementById('mealsWrap');
   mw.innerHTML=DATA.nutrition.meals.map((m,i)=>`
-    <div class="meal">
-      <div class="mh"><span class="mt">${esc(m.t)}</span><span class="when">${esc(m.when)}</span></div>
-      <div class="mc" contenteditable="true" data-meal="${i}">${esc(m.c)}</div>
+    <div class="meal" data-drag-idx="${i}">
+      <div class="mh">
+        ${arrangeMode?'<span class="drag-handle">'+ICON.grip+'</span>':''}
+        <span class="mt" data-edit-meal="${i}_t">${esc(m.t)}</span>
+        <span class="when" data-edit-meal="${i}_when">${esc(m.when)}</span>
+        <button class="row-del" data-meal-del="${i}">${ICON.trash}</button>
+      </div>
+      <div class="mc" data-edit-meal="${i}_c">${esc(m.c)}</div>
     </div>`).join('');
-  mw.querySelectorAll('.mc').forEach(el=>{
-    el.onblur=()=>{DATA.nutrition.meals[el.dataset.meal].c=el.innerText;save();};
+  mw.querySelectorAll('[data-edit-meal]').forEach(el=>{
+    const [i,field]=el.dataset.editMeal.split('_');
+    makeEditable(el,()=>DATA.nutrition.meals[i][field],v=>DATA.nutrition.meals[i][field]=v,{multiline:field==='c'});
+  });
+  mw.querySelectorAll('[data-meal-del]').forEach(b=>{
+    b.onclick=()=>{ if(!confirm('Delete this meal?'))return; DATA.nutrition.meals.splice(+b.dataset.mealDel,1);save();renderNutrition(); };
+  });
+  // add meal button
+  const addMeal=document.createElement('div');
+  addMeal.className='add-day-row';addMeal.style.padding='4px 0 0';
+  addMeal.innerHTML=`<button id="addMealBtn">${ICON.plus} Add meal</button>`;
+  mw.appendChild(addMeal);
+  document.getElementById('addMealBtn').onclick=()=>{
+    DATA.nutrition.meals.push({t:'New Meal',when:'time',c:'Description'});save();renderNutrition();
+  };
+  enableDragReorder(mw,'.meal',(order)=>{
+    const r=order.map(i=>DATA.nutrition.meals[i]);
+    DATA.nutrition.meals=r;save();renderNutrition();
   });
 
   const sw=document.getElementById('suppWrap');
-  sw.innerHTML=DATA.nutrition.supps.map(s=>`
-    <div class="supp"><div class="sl"><div class="sn">${esc(s.sn)}</div><div class="sw">${esc(s.sw)}</div></div><div class="sd">${esc(s.sd)}</div></div>`).join('');
+  sw.innerHTML=DATA.nutrition.supps.map((s,i)=>`
+    <div class="supp" data-drag-idx="${i}">
+      ${arrangeMode?'<span class="drag-handle">'+ICON.grip+'</span>':''}
+      <div class="sl">
+        <div class="sn" data-edit-supp="${i}_sn">${esc(s.sn)}</div>
+        <div class="sw" data-edit-supp="${i}_sw">${esc(s.sw)}</div>
+      </div>
+      <div class="sd" data-edit-supp="${i}_sd">${esc(s.sd)}</div>
+      <button class="row-del" data-supp-del="${i}">${ICON.trash}</button>
+    </div>`).join('');
+  sw.querySelectorAll('[data-edit-supp]').forEach(el=>{
+    const [i,field]=el.dataset.editSupp.split('_');
+    makeEditable(el,()=>DATA.nutrition.supps[i][field],v=>DATA.nutrition.supps[i][field]=v);
+  });
+  sw.querySelectorAll('[data-supp-del]').forEach(b=>{
+    b.onclick=()=>{ if(!confirm('Delete this supplement?'))return; DATA.nutrition.supps.splice(+b.dataset.suppDel,1);save();renderNutrition(); };
+  });
+  const addSupp=document.createElement('div');
+  addSupp.className='add-day-row';addSupp.style.padding='4px 0 0';
+  addSupp.innerHTML=`<button id="addSuppBtn">${ICON.plus} Add supplement</button>`;
+  sw.appendChild(addSupp);
+  document.getElementById('addSuppBtn').onclick=()=>{
+    DATA.nutrition.supps.push({sn:'New Supplement',sw:'timing',sd:'dose'});save();renderNutrition();
+  };
+  enableDragReorder(sw,'.supp',(order)=>{
+    const r=order.map(i=>DATA.nutrition.supps[i]);
+    DATA.nutrition.supps=r;save();renderNutrition();
+  });
 }
 function mrow(key,m,label,val,u,prot){
   return `<div class="mrow"><span class="k">${label}</span><span class="val"><input data-key="${key}" data-m="${m}" value="${val}" inputmode="numeric"${prot?' class="prot"':''}><span class="u">${u}</span></span></div>`;
@@ -1043,19 +1313,104 @@ function mrow(key,m,label,val,u,prot){
 /* ---------- RENDER: recovery ---------- */
 function renderRecovery(){
   const w=document.getElementById('recoveryWrap');
-  w.innerHTML=DATA.recovery.map(r=>`
-    <div class="info"><h4><span class="ic">${ICON[r.icon]||''}</span>${esc(r.t)}</h4>
-      <ul>${r.li.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+  w.innerHTML=DATA.recovery.map((r,ri)=>`
+    <div class="info" data-drag-idx="${ri}">
+      <h4>
+        ${arrangeMode?'<span class="drag-handle">'+ICON.grip+'</span>':`<span class="ic">${ICON[r.icon]||''}</span>`}
+        <span data-edit-rec="${ri}_t" style="flex:1">${esc(r.t)}</span>
+        <button class="row-del" data-rec-del="${ri}">${ICON.trash}</button>
+      </h4>
+      <ul>${r.li.map((x,li)=>`<li data-edit-recli="${ri}_${li}">${esc(x)}<button class="li-del" data-recli-del="${ri}_${li}">×</button></li>`).join('')}</ul>
+      <button class="add-li" data-recli-add="${ri}">${ICON.plus} Add point</button>
+    </div>`).join('');
+  // add section button
+  const addSec=document.createElement('div');
+  addSec.className='add-day-row';addSec.style.padding='4px 0 0';
+  addSec.innerHTML=`<button id="addRecBtn">${ICON.plus} Add recovery section</button>`;
+  w.appendChild(addSec);
+  document.getElementById('addRecBtn').onclick=()=>{
+    DATA.recovery.push({icon:'sun',t:'New Section',li:['New point']});save();renderRecovery();
+  };
+  w.querySelectorAll('[data-edit-rec]').forEach(el=>{
+    const [ri,f]=el.dataset.editRec.split('_');
+    makeEditable(el,()=>DATA.recovery[ri][f],v=>DATA.recovery[ri][f]=v);
+  });
+  w.querySelectorAll('[data-edit-recli]').forEach(el=>{
+    const [ri,li]=el.dataset.editRecli.split('_');
+    makeEditable(el,()=>DATA.recovery[ri].li[li],v=>DATA.recovery[ri].li[li]=v);
+  });
+  w.querySelectorAll('[data-rec-del]').forEach(b=>{
+    b.onclick=()=>{ if(!confirm('Delete this section?'))return; DATA.recovery.splice(+b.dataset.recDel,1);save();renderRecovery(); };
+  });
+  w.querySelectorAll('[data-recli-del]').forEach(b=>{
+    b.onclick=(e)=>{ e.stopPropagation(); const [ri,li]=b.dataset.recliDel.split('_'); DATA.recovery[ri].li.splice(+li,1);save();renderRecovery(); };
+  });
+  w.querySelectorAll('[data-recli-add]').forEach(b=>{
+    b.onclick=()=>{ DATA.recovery[+b.dataset.recliAdd].li.push('New point');save();renderRecovery(); };
+  });
+  enableDragReorder(w,'.info',(order)=>{
+    DATA.recovery=order.map(i=>DATA.recovery[i]);save();renderRecovery();
+  });
+
   const ww=document.getElementById('weakWrap');
-  ww.innerHTML=DATA.weak.map(x=>`
-    <div class="supp"><div class="sl"><div class="sn">${esc(x.a)}</div><div class="sw">${esc(x.w)}</div></div><div class="sd" style="font-size:11px;text-align:right;max-width:130px;white-space:normal;line-height:1.3">${esc(x.fix)}</div></div>`).join('');
+  ww.innerHTML=DATA.weak.map((x,wi)=>`
+    <div class="supp" data-drag-idx="${wi}">
+      ${arrangeMode?'<span class="drag-handle">'+ICON.grip+'</span>':''}
+      <div class="sl">
+        <div class="sn" data-edit-weak="${wi}_a">${esc(x.a)}</div>
+        <div class="sw" data-edit-weak="${wi}_w">${esc(x.w)}</div>
+      </div>
+      <div class="sd" data-edit-weak="${wi}_fix" style="font-size:11px;text-align:right;max-width:130px;white-space:normal;line-height:1.3">${esc(x.fix)}</div>
+      <button class="row-del" data-weak-del="${wi}">${ICON.trash}</button>
+    </div>`).join('');
+  const addWeak=document.createElement('div');
+  addWeak.className='add-day-row';addWeak.style.padding='4px 0 0';
+  addWeak.innerHTML=`<button id="addWeakBtn">${ICON.plus} Add priority</button>`;
+  ww.appendChild(addWeak);
+  document.getElementById('addWeakBtn').onclick=()=>{
+    DATA.weak.push({a:'New Area',w:'why it matters',fix:'how to fix'});save();renderRecovery();
+  };
+  ww.querySelectorAll('[data-edit-weak]').forEach(el=>{
+    const [wi,f]=el.dataset.editWeak.split('_');
+    makeEditable(el,()=>DATA.weak[wi][f],v=>DATA.weak[wi][f]=v);
+  });
+  ww.querySelectorAll('[data-weak-del]').forEach(b=>{
+    b.onclick=()=>{ if(!confirm('Delete this priority?'))return; DATA.weak.splice(+b.dataset.weakDel,1);save();renderRecovery(); };
+  });
+  enableDragReorder(ww,'.supp',(order)=>{
+    DATA.weak=order.map(i=>DATA.weak[i]);save();renderRecovery();
+  });
 }
 
 /* ---------- RENDER: track ---------- */
 function renderTrack(){
   const kw=document.getElementById('kpiWrap');
   kw.innerHTML=DATA.kpis.map((k,i)=>`
-    <div class="kpi"><div class="kt"><div class="kn">${i+1}</div><h4>${esc(k.h)}</h4></div><p>${esc(k.p)}</p></div>`).join('');
+    <div class="kpi" data-drag-idx="${i}">
+      <div class="kt">
+        ${arrangeMode?'<span class="drag-handle">'+ICON.grip+'</span>':`<div class="kn">${i+1}</div>`}
+        <h4 data-edit-kpi="${i}_h" style="flex:1">${esc(k.h)}</h4>
+        <button class="row-del" data-kpi-del="${i}">${ICON.trash}</button>
+      </div>
+      <p data-edit-kpi="${i}_p">${esc(k.p)}</p>
+    </div>`).join('');
+  const addKpi=document.createElement('div');
+  addKpi.className='add-day-row';addKpi.style.padding='4px 0 12px';
+  addKpi.innerHTML=`<button id="addKpiBtn">${ICON.plus} Add KPI</button>`;
+  kw.appendChild(addKpi);
+  document.getElementById('addKpiBtn').onclick=()=>{
+    DATA.kpis.push({h:'New KPI',p:'What to track and why.'});save();renderTrack();
+  };
+  kw.querySelectorAll('[data-edit-kpi]').forEach(el=>{
+    const [i,f]=el.dataset.editKpi.split('_');
+    makeEditable(el,()=>DATA.kpis[i][f],v=>DATA.kpis[i][f]=v,{multiline:f==='p'});
+  });
+  kw.querySelectorAll('[data-kpi-del]').forEach(b=>{
+    b.onclick=()=>{ if(!confirm('Delete this KPI?'))return; DATA.kpis.splice(+b.dataset.kpiDel,1);save();renderTrack(); };
+  });
+  enableDragReorder(kw,'.kpi',(order)=>{
+    DATA.kpis=order.map(i=>DATA.kpis[i]);save();renderTrack();
+  });
   renderLogs();
 }
 function renderLogs(){
@@ -1122,12 +1477,13 @@ document.getElementById('addWeekBtn').onclick=()=>{
     toast(`"${name}" created`);
   });
 };
-document.getElementById('editToggle').onclick=function(){
-  editMode=!editMode;
-  this.classList.toggle('on',editMode);
-  this.childNodes[this.childNodes.length-1].textContent=editMode?' Done':' Edit';
-  renderDays();
-  toast(editMode?'Edit mode — change anything':'Saved');
+document.getElementById('arrangeToggle').onclick=function(){
+  arrangeMode=!arrangeMode;
+  this.classList.toggle('on',arrangeMode);
+  this.childNodes[this.childNodes.length-1].textContent=arrangeMode?' Lock':' Arrange';
+  document.body.classList.toggle('arrange-mode',arrangeMode);
+  renderAll();
+  toast(arrangeMode?'Arrange mode — drag to reorder':'Locked in place');
 };
 document.getElementById('logSave').onclick=saveLog;
 document.getElementById('resetBtn').onclick=()=>{
